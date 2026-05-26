@@ -43,10 +43,13 @@ export default function HomePage() {
               </span>
             </div>
 
-            <h1 className="font-display font-extrabold text-white leading-[0.95] tracking-[-0.04em] mb-6">
-              <span className="block text-5xl md:text-7xl lg:text-8xl">Aerospace</span>
-              <span className="block text-5xl md:text-7xl lg:text-8xl text-[#4FC3F7]">Engineering</span>
-              <span className="block text-5xl md:text-7xl lg:text-8xl">Unlocked.</span>
+            <h1
+              className="font-display font-extrabold text-white leading-[0.95] tracking-[-0.04em] mb-6 break-words"
+              style={{ maxWidth: "800px" }}
+            >
+              <span className="block" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}>Aerospace</span>
+              <span className="block text-[#4FC3F7]" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}>Engineering</span>
+              <span className="block" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}>Unlocked.</span>
             </h1>
 
             <p className="font-sans font-light text-[#8FA3BC] text-lg md:text-xl leading-relaxed max-w-2xl mb-10">

@@ -18,7 +18,7 @@ export default function Navbar() {
           <span
             className="font-display font-bold text-white tracking-[-0.03em] text-lg leading-none"
           >
-            AEROSOLVE
+            AeroSolve Interactive
           </span>
         </Link>
 
