@@ -1,26 +1,117 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-space: #080C12;
+  --color-surface: #0E1520;
+  --color-line: #1C2A3E;
+  --color-accent: #4FC3F7;
+  --color-gold: #F4C842;
+  --color-coral: #FF6B5B;
+  --color-fog: #8FA3BC;
+  --color-dim: #536B84;
+
+  --font-display: var(--font-syne);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-dm-mono);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  from { background-position: -400px 0; }
+  to   { background-position: 400px 0; }
+}
+
+html {
+  background-color: #080C12;
+  color: #8FA3BC;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  min-height: 100dvh;
+}
+
+/* Subtle 60px grid background texture */
+.grid-texture {
+  background-image:
+    linear-gradient(rgba(79,195,247,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,195,247,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Marquee track */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Card glow on hover */
+.card-hover {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card-hover:hover {
+  border-color: rgba(79, 195, 247, 0.5);
+  box-shadow: 0 0 24px rgba(79, 195, 247, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Coming-soon shimmer */
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(79,195,247,0.08) 50%, transparent 100%);
+  background-size: 400px 100%;
+  animation: shimmer 2.4s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #080C12; }
+::-webkit-scrollbar-thumb { background: #1C2A3E; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4FC3F7; }
+
+/* Fade-up animation utility */
+.fade-up {
+  animation: fadeUp 0.6s ease both;
+}
+
+/* Prose-like lesson content */
+.lesson-prose h2 {
+  font-family: var(--font-syne);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #e2ecf4;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+.lesson-prose p {
+  line-height: 1.75;
+  margin-bottom: 1rem;
+  color: #8FA3BC;
+}
+.lesson-prose ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.lesson-prose ul li {
+  margin-bottom: 0.4rem;
+  color: #8FA3BC;
+}
+.lesson-prose strong {
+  color: #b8cfe0;
+  font-weight: 500;
 }
