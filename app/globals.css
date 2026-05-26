@@ -39,6 +39,10 @@ html {
 body {
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1;
 }
 
 /* Subtle 60px grid background texture */

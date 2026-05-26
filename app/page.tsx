@@ -34,7 +34,10 @@ export default function HomePage() {
 
       <main className="flex-1 pt-16 grid-texture">
         {/* ── HERO ─────────────────────────────────────────────────────────── */}
-        <section className="max-w-7xl mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28">
+        <section
+          className="max-w-7xl mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28"
+          style={{ overflow: "hidden", paddingRight: "2rem" }}
+        >
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#1C2A3E] bg-[#0E1520] mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-[#4FC3F7] animate-pulse" />
@@ -44,12 +47,16 @@ export default function HomePage() {
             </div>
 
             <h1
-              className="font-display font-extrabold text-white leading-[0.95] tracking-[-0.04em] mb-6 break-words"
-              style={{ maxWidth: "800px" }}
+              className="font-display font-extrabold text-white leading-[0.95] tracking-[-0.04em] mb-6"
+              style={{
+                maxWidth: "700px",
+                overflowWrap: "break-word",
+                wordBreak: "break-word",
+              }}
             >
-              <span className="block" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}>Aerospace</span>
-              <span className="block text-[#4FC3F7]" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}>Engineering</span>
-              <span className="block" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}>Unlocked.</span>
+              <span className="block" style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)" }}>Aerospace</span>
+              <span className="block text-[#4FC3F7]" style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)" }}>Engineering</span>
+              <span className="block" style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)" }}>Unlocked.</span>
             </h1>
 
             <p className="font-sans font-light text-[#8FA3BC] text-lg md:text-xl leading-relaxed max-w-2xl mb-10">
