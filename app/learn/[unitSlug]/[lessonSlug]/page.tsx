@@ -3,8 +3,18 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import QuizCard from "@/components/QuizCard";
+import SimulationEmbed from "@/components/SimulationEmbed";
 import { units } from "@/data/units";
 import { lessons, getLessonBySlug, getLessonsByUnit } from "@/data/lessons";
+
+const SIMULATION_SLUGS = new Set([
+  'the-four-forces-of-flight',
+  'angle-of-attack',
+  'lift-and-drag',
+  'pitch-roll-and-yaw',
+  'thrust-and-exhaust',
+  'trusses-and-bracing',
+]);
 
 export function generateStaticParams() {
   return lessons
@@ -194,6 +204,34 @@ export default async function LessonPage({
                     <p className="font-sans text-xs text-[#536B84] leading-relaxed">{kt.definition}</p>
                   </div>
                 ))}
+              </div>
+            </section>
+          )}
+
+          {/* Simulation — Try It */}
+          {SIMULATION_SLUGS.has(lessonSlug) && (
+            <section>
+              <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-4">
+                Try It — Interactive Simulation
+              </p>
+              <SimulationEmbed lessonSlug={lessonSlug} />
+              <div className="mt-3 flex justify-end">
+                <Link
+                  href={`/simulations/${
+                    lessonSlug === 'the-four-forces-of-flight' ? 'four-forces' :
+                    lessonSlug === 'angle-of-attack' ? 'airfoil' :
+                    lessonSlug === 'lift-and-drag' ? 'drag' :
+                    lessonSlug === 'pitch-roll-and-yaw' ? 'attitude' :
+                    lessonSlug === 'thrust-and-exhaust' ? 'rocket-launch' :
+                    'structures'
+                  }`}
+                  className="font-mono text-[11px] text-[#4FC3F7] hover:text-[#7dd9ff] transition-colors flex items-center gap-1"
+                >
+                  Open full simulation
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                    <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
               </div>
             </section>
           )}
