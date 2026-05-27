@@ -62,18 +62,24 @@ export const kitBuildProcess = [
   "Track impact and improve the next version",
 ] as const;
 
-// To enable working CAD downloads later, place real STEP files in:
+// Real STEP files should be placed in:
 // public/cad/kits/[kitSlug]/[fileName].step
-// The matching public URL will be:
+// The matching public URL is:
 // /cad/kits/[kitSlug]/[fileName].step
-function comingSoonCad(kitSlug: string, fileName: string, label: string, description: string): CadFile {
+function cadFile(
+  kitSlug: string,
+  fileName: string,
+  label: string,
+  description: string,
+  status: CadFile["status"],
+): CadFile {
   return {
     label,
     description,
     fileName,
     filePath: `/cad/kits/${kitSlug}/${fileName}.step`,
     fileType: "STEP",
-    status: "Coming Soon",
+    status,
   };
 }
 
@@ -560,8 +566,8 @@ export const kits: Kit[] = [
       "Discuss how controlled test rigs help aerospace engineers trust their results.",
     ],
     cadFiles: [
-      comingSoonCad("glider-launcher-stand", "angle-bracket", "Angle bracket", "Optional bracket for setting and holding a repeatable launch angle."),
-      comingSoonCad("glider-launcher-stand", "glider-cradle", "Glider cradle", "Optional support piece that holds the glider in a more consistent launch position."),
+      cadFile("glider-launcher-stand", "angle-bracket", "Angle bracket", "Optional bracket for setting and holding a repeatable launch angle.", "Available"),
+      cadFile("glider-launcher-stand", "glider-cradle", "Glider cradle", "Optional support piece that holds the glider in a more consistent launch position.", "Available"),
     ],
   },
   {
@@ -646,8 +652,8 @@ export const kits: Kit[] = [
       "Discuss how classroom observations relate to professional wind tunnel testing.",
     ],
     cadFiles: [
-      comingSoonCad("mini-wind-tunnel-flow-visualizer", "airfoil-test-mount", "Airfoil test mount", "Optional holder that positions a wing sample at repeatable angles in the tunnel."),
-      comingSoonCad("mini-wind-tunnel-flow-visualizer", "sample-airfoil-wing", "Sample airfoil wing", "Optional wing sample that can be tested inside the tunnel."),
+      cadFile("mini-wind-tunnel-flow-visualizer", "airfoil-test-mount", "Airfoil test mount", "Optional holder that positions a wing sample at repeatable angles in the tunnel.", "Available"),
+      cadFile("mini-wind-tunnel-flow-visualizer", "sample-airfoil-wing", "Sample airfoil wing", "Optional wing sample that can be tested inside the tunnel.", "Available"),
     ],
   },
   {
@@ -736,8 +742,8 @@ export const kits: Kit[] = [
       "Add a second round of testing after redesigning the weakest tower.",
     ],
     cadFiles: [
-      comingSoonCad("arduino-shake-table-structural-test-rig", "servo-mount", "Servo mount", "Optional part that gives the servo a more repeatable attachment point on the base."),
-      comingSoonCad("arduino-shake-table-structural-test-rig", "platform-slider-bracket", "Platform slider bracket", "Optional guide bracket that helps the platform move more consistently."),
+      cadFile("arduino-shake-table-structural-test-rig", "servo-mount", "Servo mount", "Optional part that gives the servo a more repeatable attachment point on the base.", "Available"),
+      cadFile("arduino-shake-table-structural-test-rig", "platform-slider-bracket", "Platform slider bracket", "Optional guide bracket that helps the platform move more consistently.", "Available"),
     ],
   },
   {
@@ -823,8 +829,8 @@ export const kits: Kit[] = [
       "Discuss why modular fixtures help professional test programs move faster.",
     ],
     cadFiles: [
-      comingSoonCad("adjustable-rocket-fin-test-fixture", "fin-collar", "Fin collar", "Optional collar that gives the rocket body a repeatable mounting point for interchangeable fins."),
-      comingSoonCad("adjustable-rocket-fin-test-fixture", "interchangeable-fin-slot", "Interchangeable fin slot", "Optional slot part that makes fin swaps faster between trials."),
+      cadFile("adjustable-rocket-fin-test-fixture", "fin-collar", "Fin collar", "Optional collar that gives the rocket body a repeatable mounting point for interchangeable fins.", "Available"),
+      cadFile("adjustable-rocket-fin-test-fixture", "interchangeable-fin-slot", "Interchangeable fin slot", "Optional slot part that makes fin swaps faster between trials.", "Available"),
     ],
   },
   {
@@ -911,8 +917,8 @@ export const kits: Kit[] = [
       "Connect the challenge to landers and payload recovery systems.",
     ],
     cadFiles: [
-      comingSoonCad("payload-parachute-capsule-challenge", "capsule-shell", "Capsule shell", "Optional shell that gives the payload a more repeatable protective structure."),
-      comingSoonCad("payload-parachute-capsule-challenge", "parachute-attachment-ring", "Parachute attachment ring", "Optional ring that keeps parachute lines evenly spaced on the capsule."),
+      cadFile("payload-parachute-capsule-challenge", "capsule-shell", "Capsule shell", "Optional shell that gives the payload a more repeatable protective structure.", "Available"),
+      cadFile("payload-parachute-capsule-challenge", "parachute-attachment-ring", "Parachute attachment ring", "Optional ring that keeps parachute lines evenly spaced on the capsule.", "Available"),
     ],
   },
 ];
