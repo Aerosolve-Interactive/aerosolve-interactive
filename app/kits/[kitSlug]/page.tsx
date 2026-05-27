@@ -3,6 +3,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CADFilesPanel from "@/components/CADFilesPanel";
+import PrintGuideButton from "@/components/PrintGuideButton";
 import Badge from "@/components/ui/Badge";
 import IconBadge from "@/components/ui/IconBadge";
 import { AppIcon } from "@/components/ui/AppIcon";
@@ -45,7 +46,8 @@ export default async function KitDetailPage({
     <>
       <Navbar />
       <main className="grid-texture flex-1 pt-[72px]">
-        <div className="border-b border-white/10 bg-slate-950/70">
+        {/* Breadcrumb — hidden in print */}
+        <div className="border-b border-white/10 bg-slate-950/70 print:hidden">
           <div className="mx-auto flex max-w-7xl items-center gap-2 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
             <Link href="/kits" className="transition-colors hover:text-slate-200">
               Kits
@@ -55,10 +57,42 @@ export default async function KitDetailPage({
           </div>
         </div>
 
-        <section className="section-shell border-b border-white/10 bg-[#07111f]/60">
+        {/* Hero / header — white in print */}
+        <section className="section-shell border-b border-white/10 bg-[#07111f]/60 print:bg-white print:border-slate-200">
           <div className="mx-auto max-w-7xl px-6 pb-14 pt-14">
             <div className="max-w-5xl">
-              <div className="flex flex-wrap items-center gap-3">
+              {/* Print-only compact header that sits above the badges */}
+              <div className="print-only mb-6 border-b border-slate-300 pb-5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500 mb-1">
+                  AeroKits Build Guide · aerosolve-interactive.com
+                </p>
+                <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 mt-1">
+                  {kit.title}
+                </h1>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed max-w-3xl">
+                  {kit.description}
+                </p>
+                <div className="mt-3 grid grid-cols-3 gap-x-6 gap-y-1 text-sm">
+                  <div><span className="font-semibold text-slate-700">Level: </span><span className="text-slate-600">{kit.level}</span></div>
+                  <div><span className="font-semibold text-slate-700">Difficulty: </span><span className="text-slate-600">{kit.difficulty}</span></div>
+                  <div><span className="font-semibold text-slate-700">Ages: </span><span className="text-slate-600">{kit.ageRange}</span></div>
+                  <div><span className="font-semibold text-slate-700">Time: </span><span className="text-slate-600">{kit.estimatedTime}</span></div>
+                  <div><span className="font-semibold text-slate-700">Material cost: </span><span className="text-slate-600">{kit.estimatedMaterialCost}</span></div>
+                  {kit.maxMaterialCost ? (
+                    <div><span className="font-semibold text-slate-700">Max cost: </span><span className="text-slate-600">{kit.maxMaterialCost}</span></div>
+                  ) : null}
+                </div>
+                <div className="mt-2 text-sm">
+                  <span className="font-semibold text-slate-700">Concepts: </span>
+                  <span className="text-slate-600">{kit.concepts.join(' · ')}</span>
+                </div>
+                <p className="mt-3 text-[10px] text-slate-400 italic">
+                  Free build guide for educational, nonprofit, and volunteer use. Not for commercial reproduction.
+                </p>
+              </div>
+
+              {/* Screen badges — visible on screen, hidden in print (print-only header replaces them) */}
+              <div className="print:hidden flex flex-wrap items-center gap-3">
                 <Badge tone={kit.level === "Advanced" ? "indigo" : "cyan"}>{kit.level}</Badge>
                 <Badge tone={difficultyTone}>{kit.difficulty}</Badge>
                 <Badge tone="blue">Ages {kit.ageRange}</Badge>
@@ -67,7 +101,7 @@ export default async function KitDetailPage({
                 {kit.maxMaterialCost ? <Badge tone="gold">{kit.maxMaterialCost}</Badge> : null}
               </div>
 
-              <div className="mt-6 flex items-center gap-4">
+              <div className="mt-6 flex items-center gap-4 print:hidden">
                 <IconBadge tone={kit.level === "Advanced" ? "gold" : "cyan"} className="h-14 w-14">
                   <AppIcon name={getKitIcon(kit.slug)} className="h-5 w-5" />
                 </IconBadge>
@@ -81,11 +115,11 @@ export default async function KitDetailPage({
                 </div>
               </div>
 
-              <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-300">
+              <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-300 print:hidden">
                 {kit.description}
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="mt-6 flex flex-wrap gap-2 print:hidden">
                 {kit.concepts.map((concept) => (
                   <Badge key={concept} tone="cyan">
                     {concept}
@@ -93,14 +127,12 @@ export default async function KitDetailPage({
                 ))}
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-4">
+              {/* Action buttons — hidden in print */}
+              <div className="mt-8 flex flex-wrap gap-4 print:hidden">
                 <Link href="/kits" className="btn-secondary px-5 py-3">
                   Back to Kits
                 </Link>
-                <a href="#" className="btn-primary px-5 py-3">
-                  Print Guide
-                  <AppIcon name="clipboard" className="h-3.5 w-3.5" />
-                </a>
+                <PrintGuideButton />
                 {kit.cadFiles?.length ? (
                   <a href="#cad-files" className="btn-secondary px-5 py-3">
                     CAD Files
@@ -123,7 +155,9 @@ export default async function KitDetailPage({
 
             <section>
               <p className="eyebrow mb-5">Materials Needed</p>
-              <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03]">
+
+              {/* Screen: full table (hidden in print) */}
+              <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] print:hidden">
                 <div className="border-b border-white/10 px-5 py-4 text-sm leading-7 text-slate-400">
                   Volunteers gather these materials themselves before the build event. The guide explains the process; the site does not provide or sell materials.
                 </div>
@@ -148,6 +182,28 @@ export default async function KitDetailPage({
                       ))}
                     </tbody>
                   </table>
+                </div>
+              </div>
+
+              {/* Print: checklist with checkbox squares */}
+              <div className="print-only">
+                <p className="text-xs text-slate-500 mb-3">
+                  Volunteers gather these materials before the event. The site does not provide or sell materials.
+                </p>
+                <div className="print-checklist">
+                  {kit.materials.map((material) => (
+                    <div key={material.item} className="print-checklist-item">
+                      <span className="print-checklist-box" aria-hidden="true" />
+                      <span>
+                        <strong>{material.item}</strong>
+                        {" — "}{material.quantity}
+                        {material.estimatedCost ? ` · ${material.estimatedCost}` : ""}
+                        {material.notes ? (
+                          <span className="text-slate-500"> · {material.notes}</span>
+                        ) : null}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </section>
@@ -286,7 +342,9 @@ export default async function KitDetailPage({
 
             <section>
               <p className="eyebrow mb-5">Donation Checklist</p>
-              <div className="grid gap-3 md:grid-cols-2">
+
+              {/* Screen: icon cards (hidden in print) */}
+              <div className="grid gap-3 md:grid-cols-2 print:hidden">
                 {kit.donationChecklist.map((item) => (
                   <article key={item} className="premium-panel rounded-[24px] p-5">
                     <div className="flex items-start gap-3 text-sm leading-7 text-slate-300">
@@ -294,6 +352,16 @@ export default async function KitDetailPage({
                       {item}
                     </div>
                   </article>
+                ))}
+              </div>
+
+              {/* Print: checkbox list */}
+              <div className="print-only print-checklist">
+                {kit.donationChecklist.map((item) => (
+                  <div key={item} className="print-checklist-item">
+                    <span className="print-checklist-box" aria-hidden="true" />
+                    <span>{item}</span>
+                  </div>
                 ))}
               </div>
             </section>
@@ -319,7 +387,7 @@ export default async function KitDetailPage({
             ) : null}
           </div>
 
-          <aside className="space-y-4 lg:sticky lg:top-28 lg:h-fit">
+          <aside className="space-y-4 lg:sticky lg:top-28 lg:h-fit print:hidden">
             <div className="premium-panel rounded-[28px] p-5">
               <p className="eyebrow">Guide Snapshot</p>
               <div className="mt-5 space-y-4">
