@@ -322,3 +322,195 @@ select:focus-visible {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
 }
+
+/* ─── Print utilities (screen state) ────────────────────────── */
+/* .print-only is invisible on screen and revealed in print */
+.print-only {
+  display: none;
+}
+
+/* ─── Print styles ───────────────────────────────────────────── */
+@media print {
+  /* Page setup */
+  @page {
+    size: letter;
+    margin: 1.8cm 1.6cm;
+  }
+
+  /* ── 1. White page reset ─────────────────────────────────── */
+  html,
+  body {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #1e293b !important;
+  }
+
+  /* Remove decorative pseudo-element overlays */
+  body::before,
+  body::after {
+    display: none !important;
+  }
+
+  /* ── 2. Hide navigation, footer, and UI chrome ──────────── */
+  header,
+  footer {
+    display: none !important;
+  }
+
+  /* Hide all action buttons — they're meaningless on paper */
+  .btn-primary,
+  .btn-secondary,
+  .btn-link {
+    display: none !important;
+  }
+
+  /* ── 3. Named dark panel classes → white ────────────────── */
+  .premium-panel,
+  .premium-panel-strong {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Grid texture on <main> */
+  .grid-texture {
+    background-image: none !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Section-shell radial glow blob */
+  .section-shell::before {
+    display: none !important;
+  }
+
+  /* Eyebrow mono label */
+  .eyebrow {
+    color: #64748b !important;
+  }
+  .eyebrow::before {
+    background: #94a3b8 !important;
+  }
+
+  /* ── 4. Normalize text that would be invisible on white paper */
+  .text-slate-50,
+  .text-slate-100,
+  .text-slate-200 {
+    color: #0f172a !important;
+  }
+  .text-slate-300 {
+    color: #1e293b !important;
+  }
+  .text-slate-400 {
+    color: #334155 !important;
+  }
+  /* slate-500 (#64748b) is readable on white — left as-is */
+
+  /* Colored text (badge labels, icon labels) → readable dark */
+  [class*="text-cyan-"],
+  [class*="text-blue-"],
+  [class*="text-amber-"],
+  [class*="text-emerald-"],
+  [class*="text-orange-"],
+  [class*="text-indigo-"] {
+    color: #334155 !important;
+  }
+
+  /* Colored / semi-transparent bg tints → plain white */
+  [class*="bg-cyan-"],
+  [class*="bg-blue-"],
+  [class*="bg-amber-"],
+  [class*="bg-emerald-"],
+  [class*="bg-orange-"],
+  [class*="bg-indigo-"],
+  [class*="bg-slate-"],
+  [class*="bg-white"] {
+    background-color: #ffffff !important;
+  }
+
+  /* ── 5. Table layout ──────────────────────────────────────── */
+  /* Un-clip the overflow wrapper so table fits on the page */
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  table {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-collapse: collapse !important;
+    font-size: 0.8rem !important;
+  }
+  th,
+  td {
+    border: 1px solid #e2e8f0 !important;
+    padding: 5px 8px !important;
+    color: #1e293b !important;
+    background: transparent !important;
+    text-align: left !important;
+  }
+  thead tr th {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.12em !important;
+  }
+
+  /* ── 6. Print-only utilities ─────────────────────────────── */
+  .print-only {
+    display: block !important;
+  }
+
+  /* ── 7. Animations and transitions off ───────────────────── */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* ── 8. Page break management ────────────────────────────── */
+  section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  article {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* ── 9. Print checklist items (materials + donation list) ── */
+  .print-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .print-checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    color: #1e293b;
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+  .print-checklist-box {
+    flex-shrink: 0;
+    margin-top: 0.22rem;
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid #64748b;
+    border-radius: 2px;
+  }
+
+  /* ── 10. CAD print-url helper ────────────────────────────── */
+  .print-cad-url {
+    font-size: 0.72rem;
+    color: #475569;
+    word-break: break-all;
+  }
+}

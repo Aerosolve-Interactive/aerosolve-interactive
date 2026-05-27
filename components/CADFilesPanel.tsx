@@ -43,6 +43,12 @@ export default function CADFilesPanel({ kitSlug, cadFiles }: CADFilesPanelProps)
                     <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
                       {file.fileName}.step
                     </p>
+                    {/* Print-only: show the URL so printed guides still reference the file */}
+                    <p className="print-only print-cad-url mt-1">
+                      {file.status === "Available"
+                        ? `Download: aerosolve-interactive.com${file.filePath}`
+                        : "File coming soon — check aerosolve-interactive.com/kits for updates."}
+                    </p>
                   </div>
                 </div>
 
