@@ -1,6 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProjectCard from "@/components/ProjectCard";
+import PageHeader from "@/components/ui/PageHeader";
+import Badge from "@/components/ui/Badge";
+import IconBadge from "@/components/ui/IconBadge";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { projects } from "@/data/projects";
 
 export const metadata = {
@@ -9,106 +13,114 @@ export const metadata = {
     "Hands-on aerospace engineering projects from beginner paper gliders to Arduino shake table structural tests.",
 };
 
-const DIFFICULTIES = ["All", "Beginner", "Intermediate", "Advanced"] as const;
-
 export default function ProjectsPage() {
-  const beginnerProjects = projects.filter((p) => p.difficulty === "Beginner");
-  const intermediateProjects = projects.filter((p) => p.difficulty === "Intermediate");
+  const beginnerProjects = projects.filter((project) => project.difficulty === "Beginner");
+  const intermediateProjects = projects.filter((project) => project.difficulty === "Intermediate");
 
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-16 grid-texture">
-        {/* Header */}
-        <section className="max-w-7xl mx-auto px-6 pt-16 pb-12 border-b border-[#1C2A3E]">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-4">
-            Hands-On Engineering
-          </p>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div>
-              <h1 className="font-display font-extrabold text-white text-4xl md:text-5xl tracking-[-0.04em] leading-tight mb-3">
-                Projects
-              </h1>
-              <p className="font-sans text-[#8FA3BC] text-lg max-w-xl leading-relaxed">
-                Real engineering challenges with real data collection. From paper
-                gliders to Arduino-controlled shake tables — build it, test it,
-                explain it.
-              </p>
+      <main className="grid-texture flex-1 pt-[72px]">
+        <PageHeader
+          eyebrow="Hands-On Lab"
+          title="Engineering projects built around measurement."
+          description="Project pages are structured as lab guides: objective, materials, build steps, test procedure, data collection, reflection, and extension paths."
+          meta={
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                ["6", "Projects"],
+                ["2", "Detailed builds"],
+                ["Data", "Driven"],
+              ].map(([value, label]) => (
+                <div key={label} className="premium-panel rounded-[24px] px-5 py-5 text-left">
+                  <p className="font-display text-4xl font-semibold tracking-[-0.05em] text-slate-50">
+                    {value}
+                  </p>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                    {label}
+                  </p>
+                </div>
+              ))}
             </div>
-            <div className="flex gap-4 shrink-0 font-mono text-[10px] uppercase tracking-widest">
-              {DIFFICULTIES.slice(1).map((d) => {
-                const colors: Record<string, string> = {
-                  Beginner: "#4FC3F7",
-                  Intermediate: "#F4C842",
-                  Advanced: "#FF6B5B",
-                };
-                return (
-                  <span
-                    key={d}
-                    className="px-3 py-1.5 rounded-md border"
-                    style={{
-                      color: colors[d],
-                      borderColor: `${colors[d]}30`,
-                      backgroundColor: `${colors[d]}10`,
-                    }}
-                  >
-                    {d}
-                  </span>
-                );
-              })}
-            </div>
+          }
+        />
+
+        <section className="mx-auto max-w-7xl px-6 py-10">
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              {
+                title: "Build",
+                text: "Students construct a working design with constraints and an explicit engineering objective.",
+                icon: "wrench" as const,
+                tone: "cyan" as const,
+              },
+              {
+                title: "Test",
+                text: "Each project includes a repeatable test procedure so results can be compared fairly.",
+                icon: "activity" as const,
+                tone: "gold" as const,
+              },
+              {
+                title: "Measure",
+                text: "Data tables and reflection questions push every project beyond crafting into analysis.",
+                icon: "chart" as const,
+                tone: "blue" as const,
+              },
+            ].map((item) => (
+              <article key={item.title} className="premium-panel rounded-[24px] p-5">
+                <div className="flex items-center gap-4">
+                  <IconBadge tone={item.tone}>
+                    <AppIcon name={item.icon} />
+                  </IconBadge>
+                  <div>
+                    <h2 className="font-display text-xl font-semibold tracking-[-0.03em] text-slate-50">
+                      {item.title}
+                    </h2>
+                    <p className="mt-2 text-sm leading-7 text-slate-300">{item.text}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 
-        {/* Beginner section */}
-        {beginnerProjects.length > 0 && (
-          <section className="max-w-7xl mx-auto px-6 py-16">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-[#4FC3F7]">
-                Beginner
-              </span>
-              <span className="flex-1 h-px bg-[#1C2A3E]" />
+        {beginnerProjects.length > 0 ? (
+          <section className="mx-auto max-w-7xl px-6 py-10">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <p className="eyebrow mb-3">Beginner Labs</p>
+                <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50">
+                  Quick-start aerospace builds.
+                </h2>
+              </div>
+              <Badge tone="cyan">Beginner</Badge>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid gap-4 lg:grid-cols-3">
               {beginnerProjects.map((project) => (
                 <ProjectCard key={project.slug} project={project} />
               ))}
             </div>
           </section>
-        )}
+        ) : null}
 
-        {/* Intermediate section */}
-        {intermediateProjects.length > 0 && (
-          <section className="max-w-7xl mx-auto px-6 pb-20">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-[#F4C842]">
-                Intermediate
-              </span>
-              <span className="flex-1 h-px bg-[#1C2A3E]" />
+        {intermediateProjects.length > 0 ? (
+          <section className="mx-auto max-w-7xl px-6 pb-24 pt-10">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <p className="eyebrow mb-3">Intermediate Labs</p>
+                <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50">
+                  Engineering challenges with electronics and testing.
+                </h2>
+              </div>
+              <Badge tone="gold">Intermediate</Badge>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid gap-4 lg:grid-cols-3">
               {intermediateProjects.map((project) => (
                 <ProjectCard key={project.slug} project={project} />
               ))}
             </div>
           </section>
-        )}
-
-        {/* CTA */}
-        <section className="border-t border-[#1C2A3E]">
-          <div className="max-w-7xl mx-auto px-6 py-16 text-center">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-3">
-              Coming Soon
-            </p>
-            <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] mb-3">
-              More projects in development
-            </h2>
-            <p className="font-sans text-[#536B84] max-w-md mx-auto">
-              Wind tunnel airfoil testing, rocket altimeter builds, and a full
-              CNC-cut model aircraft challenge are in production.
-            </p>
-          </div>
-        </section>
+        ) : null}
       </main>
       <Footer />
     </>

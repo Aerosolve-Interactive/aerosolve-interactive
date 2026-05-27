@@ -194,15 +194,10 @@ export default function AttitudeSimulation() {
                 );
               })}
               {/* Aircraft heading pointer */}
-              {(() => {
-                const a = ((yaw - 90) * Math.PI) / 180;
-                return (
-                  <g transform={`rotate(${yaw} 60 60)`}>
-                    <polygon points="60,18 55,38 65,38" fill="#4FC3F7" />
-                    <polygon points="60,102 55,82 65,82" fill="#536B84" />
-                  </g>
-                );
-              })()}
+              <g transform={`rotate(${yaw} 60 60)`}>
+                <polygon points="60,18 55,38 65,38" fill="#4FC3F7" />
+                <polygon points="60,102 55,82 65,82" fill="#536B84" />
+              </g>
               <circle cx="60" cy="60" r="4" fill="#4FC3F7" />
             </svg>
           </div>

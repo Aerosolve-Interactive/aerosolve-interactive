@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Lesson } from "@/data/lessons";
+import { AppIcon } from "@/components/ui/AppIcon";
+import Badge from "@/components/ui/Badge";
 
 interface LessonCardProps {
   lesson: Lesson;
@@ -8,91 +10,65 @@ interface LessonCardProps {
 
 export default function LessonCard({ lesson, unitSlug }: LessonCardProps) {
   const isPublished = lesson.status === "published";
+  const href = `/learn/${unitSlug}/${lesson.slug}`;
 
-  const cardContent = (
-    <div
+  const card = (
+    <article
       className={[
-        "relative rounded-xl border p-5 transition-all duration-200",
+        "group rounded-[24px] border p-5 transition-all duration-300 md:p-6",
         isPublished
-          ? "border-[#1C2A3E] bg-[#0E1520] hover:border-[#4FC3F7]/40 hover:bg-[#0E1520] hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(79,195,247,0.08)] cursor-pointer"
-          : "border-[#1C2A3E] bg-[#0B1018] cursor-default opacity-70",
+          ? "premium-panel card-hover"
+          : "border-white/8 bg-white/[0.03] opacity-75",
       ].join(" ")}
     >
-      {/* Status badge */}
-      <div className="flex items-center justify-between mb-3">
-        <span
-          className={[
-            "inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded-md",
-            isPublished
-              ? "bg-[#4FC3F7]/10 text-[#4FC3F7]"
-              : "bg-[#1C2A3E] text-[#536B84]",
-          ].join(" ")}
-        >
-          {isPublished ? (
-            <>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4FC3F7] inline-block" />
-              Available
-            </>
-          ) : (
-            <>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#536B84] inline-block" />
-              Coming Soon
-            </>
-          )}
-        </span>
-        <span className="font-mono text-[10px] text-[#536B84]">
-          {lesson.duration}
-        </span>
-      </div>
-
-      {/* Lesson number + title */}
-      <div className="flex items-start gap-3">
-        <span className="shrink-0 font-mono text-[11px] text-[#536B84] mt-0.5 w-5 text-right">
-          {String(lesson.order).padStart(2, "0")}
-        </span>
-        <div>
-          <h3
-            className={[
-              "font-display font-bold text-base leading-tight tracking-[-0.02em] mb-1",
-              isPublished ? "text-white" : "text-[#8FA3BC]",
-            ].join(" ")}
-          >
-            {lesson.title}
-          </h3>
-          {isPublished && lesson.description && (
-            <p className="font-sans text-xs text-[#536B84] leading-relaxed line-clamp-2">
-              {lesson.description}
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/8 bg-white/[0.04] font-mono text-xs uppercase tracking-[0.2em] text-slate-400">
+            {String(lesson.order).padStart(2, "0")}
+          </span>
+          <div>
+            <Badge tone={isPublished ? "green" : "neutral"}>
+              {isPublished ? "Published" : "Coming soon"}
+            </Badge>
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+              {lesson.duration}
             </p>
-          )}
-          {!isPublished && (
-            <p className="font-sans text-xs text-[#536B84] leading-relaxed">
-              {lesson.description}
-            </p>
-          )}
+          </div>
         </div>
-      </div>
-
-      {/* Read arrow for published */}
-      {isPublished && (
-        <div className="flex justify-end mt-4">
-          <span className="font-mono text-[11px] text-[#4FC3F7] flex items-center gap-1">
-            Read lesson
-            <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-              <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+        <div className="hidden items-center gap-2 sm:flex">
+          <span className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+            Quiz
+          </span>
+          <span className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+            Activity
           </span>
         </div>
-      )}
-    </div>
+      </div>
+
+      <div className="mt-6">
+        <h3 className="font-display text-xl font-semibold leading-tight tracking-[-0.03em] text-slate-50">
+          {lesson.title}
+        </h3>
+        <p className="mt-3 text-sm leading-7 text-slate-300">
+          {lesson.description}
+        </p>
+      </div>
+
+      <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+          Learning path module
+        </span>
+        {isPublished ? (
+          <span className="inline-flex items-center gap-2 text-sm font-medium text-cyan-300 transition-transform group-hover:translate-x-1">
+            Open lesson
+            <AppIcon name="spark" className="h-3.5 w-3.5" />
+          </span>
+        ) : (
+          <span className="text-sm text-slate-500">In production</span>
+        )}
+      </div>
+    </article>
   );
 
-  if (isPublished) {
-    return (
-      <Link href={`/learn/${unitSlug}/${lesson.slug}`} className="block">
-        {cardContent}
-      </Link>
-    );
-  }
-
-  return cardContent;
+  return isPublished ? <Link href={href}>{card}</Link> : card;
 }

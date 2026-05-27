@@ -6,7 +6,6 @@ export default function RocketSimulation() {
   const [isp, setIsp] = useState(350);        // seconds (kerosene/LOX typical)
   const [massRatio, setMassRatio] = useState(8); // m0/mf
   const [stages, setStages] = useState(2);
-  const [payload, setPayload] = useState(10);  // % of initial mass
 
   const g0 = 9.80665; // m/s^2
   const Ve = isp * g0; // effective exhaust velocity, m/s
@@ -36,8 +35,6 @@ export default function RocketSimulation() {
   const orbitalFrac = Math.min(100, Math.round((dvSingle / leo) * 100));
 
   // SVG rocket visual
-  const rocketHeight = 180;
-  const rocketX = 200;
   const flameLength = Math.min(60, 20 + (dvSingle / 1000) * 2);
 
   const stageColors = ['#4FC3F7', '#4ade80', '#F4C842', '#a78bfa'];

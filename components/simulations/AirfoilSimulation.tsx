@@ -57,7 +57,7 @@ export default function AirfoilSimulation() {
     if (aoa < 16) return 0.11 * (aoa - alphaL0);  // per degree slope ~0.11
     // Post-stall drop-off
     return 0.11 * (16 - alphaL0) * (1 - (aoa - 16) / 8);
-  }, [aoa]);
+  }, [aoa, alphaL0]);
   const CL = Math.max(-0.4, Math.round(CLRaw * 100) / 100);
 
   // CD — simplified polar: CD0=0.006 + CL^2/(π*e*AR), e=0.85, AR=9
@@ -100,7 +100,6 @@ export default function AirfoilSimulation() {
   // Flow lines
   const flowLines = useMemo(() => {
     const lines: { y0: number; y1: number; separated: boolean }[] = [];
-    const rad = (aoa * Math.PI) / 180;
     for (let j = -3; j <= 4; j++) {
       const y0 = 160 + j * 25;
       let y1 = y0;

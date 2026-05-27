@@ -1,8 +1,13 @@
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Link from "next/link";
+import PageHeader from "@/components/ui/PageHeader";
+import IconBadge from "@/components/ui/IconBadge";
+import Badge from "@/components/ui/Badge";
+import { AppIcon, type IconName } from "@/components/ui/AppIcon";
 import { lessons } from "@/data/lessons";
-import { units as unitData } from "@/data/units";
+import { units } from "@/data/units";
+import { getUnitIcon } from "@/lib/visuals";
 
 export const metadata = {
   title: "About — AeroSolve Interactive",
@@ -10,201 +15,217 @@ export const metadata = {
     "The mission behind AeroSolve Interactive: making aerospace engineering education accessible to every student.",
 };
 
-const VALUES = [
+const VALUES: Array<{
+  icon: IconName;
+  title: string;
+  description: string;
+  tone: "cyan" | "gold" | "blue" | "indigo";
+}> = [
   {
-    icon: "🎯",
+    icon: "target",
     title: "Accuracy First",
     description:
-      "Every lesson is grounded in real aerospace engineering. We never simplify to the point of inaccuracy. We debunk myths (equal-transit-time theory, for one) rather than perpetuate them for convenience.",
-    color: "#4FC3F7",
+      "Lessons stay grounded in real aerospace engineering and are written to correct myths instead of repeating them for convenience.",
+    tone: "cyan",
   },
   {
-    icon: "🔓",
-    title: "Genuinely Free",
+    icon: "shield",
+    title: "Accessible By Default",
     description:
-      "No paywalls, no account requirements, no ads. The full curriculum is accessible to every student with an internet connection. This is a design constraint, not a marketing claim.",
-    color: "#F4C842",
+      "No paywall, no required account, and no inflated production barrier. The goal is reliable access, not gated access.",
+    tone: "gold",
   },
   {
-    icon: "🔬",
-    title: "Evidence-Based",
+    icon: "chart",
+    title: "Evidence-Based Learning",
     description:
-      "Activities are designed around the scientific method. Students collect data, calculate averages, identify variables, and explain results — not just follow instructions.",
-    color: "#FF6B5B",
+      "Projects and activities ask students to measure, average, compare, explain, and iterate using data.",
+    tone: "blue",
   },
   {
-    icon: "✍",
-    title: "Written, Not Watched",
+    icon: "book",
+    title: "Written For Real Study",
     description:
-      "Lessons are fully written text — not video summaries or slide decks. Students can read at their own pace, re-read sections, and reference specific content while doing an activity.",
-    color: "#4FC3F7",
+      "The platform is built for reference, re-reading, and active problem solving rather than passive watching.",
+    tone: "indigo",
   },
 ];
 
 export default function AboutPage() {
-  const publishedCount = lessons.filter((l) => l.status === "published").length;
+  const publishedCount = lessons.filter((lesson) => lesson.status === "published").length;
 
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-16 grid-texture">
-        {/* Hero */}
-        <section className="max-w-7xl mx-auto px-6 pt-16 pb-16 border-b border-[#1C2A3E]">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-4">
-            About
-          </p>
-          <h1 className="font-display font-extrabold text-white text-4xl md:text-6xl tracking-[-0.04em] leading-tight mb-6 max-w-3xl">
-            Why we built this.
-          </h1>
-          <p className="font-sans text-[#8FA3BC] text-lg leading-relaxed max-w-2xl">
-            AeroSolve Interactive exists because quality aerospace education — the
-            kind that connects physics to real aircraft, that takes students
-            seriously as future engineers — is harder to find than it should be.
-            We decided to build it ourselves.
-          </p>
+      <main className="grid-texture flex-1 pt-[72px]">
+        <PageHeader
+          eyebrow="About AeroSolve"
+          title="A student-built platform designed to feel bigger than a school project."
+          description="AeroSolve Interactive started from a simple gap: serious aerospace learning resources for students are harder to find than they should be. So the goal became to build one that feels modern, credible, and genuinely useful."
+          meta={
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                [String(publishedCount), "Published lessons"],
+                [String(units.length), "Structured units"],
+              ].map(([value, label]) => (
+                <div key={label} className="premium-panel rounded-[24px] px-5 py-5">
+                  <p className="font-display text-4xl font-semibold tracking-[-0.05em] text-slate-50">
+                    {value}
+                  </p>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                    {label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          }
+        />
+
+        <section className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[0.95fr_1.05fr]">
+          <div>
+            <p className="eyebrow mb-3">Why It Started</p>
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+              Aerospace deserves better student-facing learning tools.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-slate-300">
+              Too often, aerospace education for students is either oversimplified into
+              trivia or hidden behind expensive programs. AeroSolve was built to sit in the
+              middle: serious enough to respect the subject, accessible enough for a student
+              to open it and start learning right away.
+            </p>
+            <p className="mt-4 text-base leading-8 text-slate-300">
+              The design goal is not just “make a website.” It is to make a learning platform
+              that feels trustworthy to teachers, useful to students, and credible to the
+              nonprofits and community programs that want to use it.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {[
+              ["Accessibility", "Free forever. No account wall. No ad-driven friction."],
+              ["Engineering", "Lessons focus on systems, forces, tradeoffs, and applied reasoning."],
+              ["Curiosity", "The platform invites students to ask why things work and then test it."],
+              ["Service", "Outreach turns the curriculum outward to schools and partners that need it most."],
+            ].map(([title, text], index) => (
+              <article key={title} className="premium-panel rounded-[24px] p-5">
+                <Badge tone={index % 2 === 0 ? "cyan" : "blue"}>{title}</Badge>
+                <p className="mt-4 text-sm leading-7 text-slate-300">{text}</p>
+              </article>
+            ))}
+          </div>
         </section>
 
-        {/* Mission */}
-        <section className="max-w-7xl mx-auto px-6 py-16 border-b border-[#1C2A3E]">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-4">
-                Mission
-              </p>
-              <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] leading-tight mb-6">
-                Make the best aerospace curriculum available to every student — not just the ones who can afford it.
-              </h2>
-              <p className="font-sans text-[#8FA3BC] leading-relaxed mb-4">
-                The aerospace industry is one of the most technically demanding — and
-                most economically significant — sectors in the global economy. The next
-                generation of engineers, technicians, and designers who will staff it
-                is being educated right now.
-              </p>
-              <p className="font-sans text-[#536B84] leading-relaxed">
-                Too many of those future engineers are in classrooms where aerospace
-                means a poster of the solar system and a video about the Wright Brothers.
-                AeroSolve is the curriculum that should exist — built by people who care
-                about changing that.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                {
-                  stat: String(publishedCount),
-                  label: "Published Lessons",
-                  color: "#4FC3F7",
-                },
-                {
-                  stat: String(unitData.length),
-                  label: "Structured Units",
-                  color: "#F4C842",
-                },
-                {
-                  stat: "100%",
-                  label: "Free Forever",
-                  color: "#FF6B5B",
-                },
-                {
-                  stat: "0",
-                  label: "Ads or Paywalls",
-                  color: "#4FC3F7",
-                },
-              ].map(({ stat, label, color }) => (
-                <div key={label} className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-5 flex items-center gap-5">
-                  <p className="font-display font-extrabold text-3xl tracking-[-0.04em] w-16 text-right" style={{ color }}>
-                    {stat}
-                  </p>
-                  <p className="font-mono text-sm text-[#8FA3BC] uppercase tracking-widest">{label}</p>
-                </div>
+        <section className="border-y border-white/10 bg-[#07111f]/60">
+          <div className="mx-auto max-w-7xl px-6 py-20">
+            <p className="eyebrow mb-3">Values</p>
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+              What guides the platform.
+            </h2>
+            <div className="mt-10 grid gap-4 lg:grid-cols-2">
+              {VALUES.map((value) => (
+                <article key={value.title} className="premium-panel card-hover rounded-[28px] p-6">
+                  <div className="flex items-center gap-4">
+                    <IconBadge tone={value.tone}>
+                      <AppIcon name={value.icon} />
+                    </IconBadge>
+                    <h3 className="font-display text-2xl font-semibold tracking-[-0.04em] text-slate-50">
+                      {value.title}
+                    </h3>
+                  </div>
+                  <p className="mt-4 text-sm leading-7 text-slate-300">{value.description}</p>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Values */}
-        <section className="max-w-7xl mx-auto px-6 py-16 border-b border-[#1C2A3E]">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-2">
-            Design Principles
-          </p>
-          <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] mb-10">
-            What guides every decision.
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {VALUES.map((v) => (
-              <div key={v.title} className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-6 card-hover">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-2xl">{v.icon}</span>
-                  <h3 className="font-display font-bold text-white text-lg tracking-[-0.02em]">
-                    {v.title}
-                  </h3>
-                </div>
-                <p className="font-sans text-sm text-[#536B84] leading-relaxed">{v.description}</p>
-              </div>
-            ))}
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow mb-3">Curriculum Roadmap</p>
+              <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+                The platform grows through the learning path.
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-7 text-slate-400">
+              The order matters: fundamentals first, then motion, lift, control,
+              propulsion, and structures. It’s built as a real engineering sequence.
+            </p>
           </div>
-        </section>
-
-        {/* Curriculum overview */}
-        <section className="max-w-7xl mx-auto px-6 py-16 border-b border-[#1C2A3E]">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-2">
-            Curriculum
-          </p>
-          <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] mb-6">
-            What we teach — and why that order.
-          </h2>
-          <p className="font-sans text-[#8FA3BC] leading-relaxed mb-10 max-w-2xl">
-            The six units are sequenced to build on each other. Flight Fundamentals
-            establishes the vocabulary and the four forces. Forces & Motion connects
-            Newton&apos;s laws to real propulsion. Wings & Lift explains the mechanism
-            in depth. Stability & Control shows how pilots use what they've learned.
-            Rockets & Propulsion takes students beyond the atmosphere. Structures &
-            Materials ties it together with the question of how to build any of it
-            without it falling apart.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {unitData.map((unit, i) => (
-              <Link key={unit.slug} href={`/learn/${unit.slug}`} className="block group">
-                <div className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-5 card-hover h-full">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="font-mono text-[10px] text-[#536B84]">
-                      {String(i + 1).padStart(2, "0")}
+          <div className="grid gap-4 lg:grid-cols-3">
+            {units.map((unit, index) => (
+              <Link key={unit.slug} href={`/learn/${unit.slug}`} className="group block">
+                <article className="premium-panel card-hover h-full rounded-[28px] p-6">
+                  <div className="flex items-center justify-between">
+                    <IconBadge tone="cyan">
+                      <AppIcon name={getUnitIcon(unit.slug)} />
+                    </IconBadge>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                      0{index + 1}
                     </span>
-                    <span className="text-xl">{unit.icon}</span>
                   </div>
-                  <h3 className="font-display font-bold text-white text-base tracking-[-0.02em] mb-1 group-hover:text-[#4FC3F7] transition-colors">
+                  <h3 className="mt-6 font-display text-2xl font-semibold tracking-[-0.04em] text-slate-50">
                     {unit.title}
                   </h3>
-                  <p className="font-sans text-xs text-[#536B84] leading-relaxed">{unit.tagline}</p>
-                </div>
+                  <p className="mt-2 text-sm font-medium text-cyan-300/90">{unit.tagline}</p>
+                  <p className="mt-4 text-sm leading-7 text-slate-300">{unit.description}</p>
+                </article>
               </Link>
             ))}
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <div className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-10 text-center">
-            <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] mb-3">
-              If this sounds like something you&apos;d build too — join us.
+        <section className="border-t border-white/10">
+          <div className="mx-auto max-w-7xl px-6 py-20">
+            <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
+              <article className="premium-panel rounded-[28px] p-6">
+                <p className="eyebrow mb-3">Outreach Connection</p>
+                <h2 className="font-display text-2xl font-semibold tracking-[-0.04em] text-slate-50">
+                  The curriculum is meant to leave the screen.
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-slate-300">
+                  The same platform that teaches lift, structures, and propulsion can be
+                  packaged into kits for schools and community programs. That’s why outreach
+                  is not separate from AeroSolve. It is the service arm of the same idea.
+                </p>
+              </article>
+              <article className="premium-panel rounded-[28px] p-6">
+                <p className="eyebrow mb-3">Future Roadmap</p>
+                <h2 className="font-display text-2xl font-semibold tracking-[-0.04em] text-slate-50">
+                  More simulations, more labs, deeper engineering tools.
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-slate-300">
+                  The platform should keep evolving toward richer simulations, stronger lab
+                  documentation, and a learning experience good enough to show teachers,
+                  nonprofits, and college programs with confidence.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-6 pb-24">
+          <div className="premium-panel-strong rounded-[32px] p-8 text-center md:p-10">
+            <p className="eyebrow mx-auto w-fit">Next Step</p>
+            <h2 className="mt-5 font-display text-4xl font-semibold tracking-[-0.06em] text-slate-50 md:text-5xl">
+              Start learning or help the program grow.
             </h2>
-            <p className="font-sans text-[#8FA3BC] mb-8 max-w-lg mx-auto">
-              We&apos;re always looking for people who care about education quality, love aerospace,
-              and want to build something that lasts. Volunteer with our outreach program,
-              or just start learning.
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-300">
+              AeroSolve is equal parts curriculum, engineering practice, and service project.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/learn"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#4FC3F7] text-[#080C12] font-mono font-bold text-sm hover:bg-[#7dd9ff] transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-6 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-950"
               >
-                Start Learning
+                Start learning
+                <AppIcon name="spark" className="h-3.5 w-3.5" />
               </Link>
               <Link
                 href="/outreach"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-[#1C2A3E] text-[#8FA3BC] font-mono text-sm hover:border-[#4FC3F7]/40 hover:text-[#e2ecf4] transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-6 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-200"
               >
-                Outreach Program
+                Outreach program
               </Link>
             </div>
           </div>
