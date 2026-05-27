@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import type { QuizQuestion } from "@/data/lessons";
+import { AppIcon } from "@/components/ui/AppIcon";
+import ProgressBar from "@/components/ui/ProgressBar";
+import { cn } from "@/lib/utils";
 
 const LABELS = ["A", "B", "C", "D"] as const;
 
@@ -16,23 +19,26 @@ export default function QuizCard({ questions }: QuizCardProps) {
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
 
-  const q = questions[current];
+  const question = questions[current];
 
-  function handleSelect(idx: number) {
+  function handleSelect(index: number) {
     if (answered) return;
-    setSelected(idx);
+    setSelected(index);
     setAnswered(true);
-    if (idx === q.answerIndex) setScore((s) => s + 1);
+    if (index === question.answerIndex) {
+      setScore((value) => value + 1);
+    }
   }
 
   function handleNext() {
-    if (current + 1 >= questions.length) {
+    if (current === questions.length - 1) {
       setDone(true);
-    } else {
-      setCurrent((c) => c + 1);
-      setSelected(null);
-      setAnswered(false);
+      return;
     }
+
+    setCurrent((value) => value + 1);
+    setSelected(null);
+    setAnswered(false);
   }
 
   function handleRestart() {
@@ -45,169 +51,198 @@ export default function QuizCard({ questions }: QuizCardProps) {
 
   if (done) {
     const pct = Math.round((score / questions.length) * 100);
-    const accentColor =
-      pct >= 80 ? "#4FC3F7" : pct >= 60 ? "#F4C842" : "#FF6B5B";
+    const tone =
+      pct >= 80
+        ? "text-emerald-300 border-emerald-400/20 bg-emerald-400/[0.08]"
+        : pct >= 60
+          ? "text-amber-300 border-amber-400/20 bg-amber-400/[0.08]"
+          : "text-orange-300 border-orange-400/20 bg-orange-400/[0.08]";
 
     return (
-      <div className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-8 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-4">
-          Quiz Complete
-        </p>
-        <p
-          className="font-display font-bold text-6xl tracking-[-0.03em] mb-2"
-          style={{ color: accentColor }}
-        >
+      <div className="premium-panel rounded-[28px] p-8 text-center md:p-10">
+        <p className="eyebrow mx-auto w-fit">Quick Check Complete</p>
+        <div className={cn("mx-auto mt-6 inline-flex rounded-full border px-5 py-2 font-mono text-[11px] uppercase tracking-[0.22em]", tone)}>
+          Final score
+        </div>
+        <p className="mt-6 font-display text-6xl font-semibold tracking-[-0.06em] text-slate-50 md:text-7xl">
           {pct}%
         </p>
-        <p className="font-sans text-[#8FA3BC] mb-1">
-          {score} of {questions.length} correct
+        <p className="mt-3 text-base text-slate-300">
+          {score} of {questions.length} questions correct
         </p>
-        <p className="font-sans text-[#536B84] text-sm mb-8">
+        <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-400">
           {pct >= 80
-            ? "Excellent work — you've mastered this lesson."
+            ? "You’re reading the lesson like an engineer: concepts, tradeoffs, and examples are landing."
             : pct >= 60
-            ? "Good effort. Review the sections you missed."
-            : "Keep studying — re-read the lesson and try again."}
+              ? "Solid understanding. Review the explanation cards below and rerun the quick check to lock it in."
+              : "The foundation is there, but this module needs another pass. Re-read the lesson and retry the quiz."}
         </p>
+        <div className="mx-auto mt-8 max-w-md">
+          <ProgressBar value={score} max={questions.length} label="Mastery" />
+        </div>
         <button
+          type="button"
           onClick={handleRestart}
-          className="px-6 py-2.5 rounded-md bg-[#4FC3F7]/10 border border-[#4FC3F7]/30 text-[#4FC3F7] font-mono text-sm hover:bg-[#4FC3F7]/20 transition-colors"
+          className="mt-8 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/[0.08] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-300 transition-all hover:-translate-y-0.5 hover:bg-cyan-400/[0.12]"
         >
-          Retake Quiz
+          <AppIcon name="spark" className="h-3.5 w-3.5" />
+          Retake quiz
         </button>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-6 md:p-8">
-      {/* Header row */}
-      <div className="flex items-center justify-between mb-6">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84]">
-          Question {current + 1} / {questions.length}
-        </p>
-        {/* Progress dots */}
-        <div className="flex items-center gap-1.5">
-          {questions.map((_, i) => (
-            <span
-              key={i}
-              className="block w-2 h-2 rounded-full transition-colors"
-              style={{
-                backgroundColor:
-                  i < current
-                    ? "#4FC3F7"
-                    : i === current
-                    ? "#4FC3F7"
-                    : "#1C2A3E",
-                opacity: i < current ? 1 : i === current ? 1 : 0.6,
-              }}
-            />
-          ))}
+    <div className="premium-panel rounded-[28px] p-6 md:p-8">
+      <div className="flex flex-col gap-5 border-b border-white/10 pb-6 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="eyebrow">Quick Check</p>
+          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500">
+            Question {current + 1} of {questions.length}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 self-start md:self-auto">
+          {questions.map((_, index) => {
+            const isCurrent = index === current;
+            const isPast = index < current;
+
+            return (
+              <span
+                key={index}
+                className={cn(
+                  "h-2.5 rounded-full transition-all duration-300",
+                  isCurrent
+                    ? "w-10 bg-gradient-to-r from-cyan-400 to-blue-500"
+                    : isPast
+                      ? "w-2.5 bg-cyan-300"
+                      : "w-2.5 bg-white/10",
+                )}
+              />
+            );
+          })}
         </div>
       </div>
 
-      {/* Question */}
-      <p className="font-display font-bold text-white text-lg md:text-xl leading-tight tracking-[-0.02em] mb-6">
-        {q.question}
-      </p>
+      <div className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+        <div>
+          <h3 className="font-display text-2xl font-semibold leading-tight tracking-[-0.04em] text-slate-50 md:text-3xl">
+            {question.question}
+          </h3>
 
-      {/* Options */}
-      <div className="space-y-3 mb-6">
-        {q.options.map((option, idx) => {
-          const isCorrect = idx === q.answerIndex;
-          const isSelected = idx === selected;
+          <div className="mt-6 space-y-3">
+            {question.options.map((option, index) => {
+              const isSelected = selected === index;
+              const isCorrect = question.answerIndex === index;
 
-          let borderColor = "#1C2A3E";
-          let bgColor = "transparent";
-          let textColor = "#8FA3BC";
-          let labelBg = "#1C2A3E";
-          let labelText = "#536B84";
+              const stateClass = answered
+                ? isCorrect
+                  ? "border-emerald-400/25 bg-emerald-400/[0.08] text-slate-50"
+                  : isSelected
+                    ? "border-orange-400/25 bg-orange-400/[0.08] text-slate-50"
+                    : "border-white/10 bg-white/[0.02] text-slate-400"
+                : isSelected
+                  ? "border-cyan-400/25 bg-cyan-400/[0.08] text-slate-50"
+                  : "border-white/10 bg-white/[0.03] text-slate-300 hover:border-cyan-400/20 hover:bg-cyan-400/[0.04]";
 
-          if (answered) {
-            if (isCorrect) {
-              borderColor = "#4FC3F7";
-              bgColor = "rgba(79,195,247,0.06)";
-              textColor = "#e2ecf4";
-              labelBg = "rgba(79,195,247,0.15)";
-              labelText = "#4FC3F7";
-            } else if (isSelected && !isCorrect) {
-              borderColor = "#FF6B5B";
-              bgColor = "rgba(255,107,91,0.06)";
-              textColor = "#e2ecf4";
-              labelBg = "rgba(255,107,91,0.15)";
-              labelText = "#FF6B5B";
-            }
-          } else if (!answered) {
-            if (isSelected) {
-              borderColor = "#4FC3F7";
-              labelBg = "rgba(79,195,247,0.15)";
-              labelText = "#4FC3F7";
-            }
-          }
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => handleSelect(index)}
+                  disabled={answered}
+                  className={cn(
+                    "flex w-full items-start gap-4 rounded-2xl border p-4 text-left transition-all duration-300",
+                    stateClass,
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border font-mono text-sm uppercase tracking-[0.18em]",
+                      answered && isCorrect
+                        ? "border-emerald-400/25 bg-emerald-400/[0.12] text-emerald-300"
+                        : answered && isSelected && !isCorrect
+                          ? "border-orange-400/25 bg-orange-400/[0.12] text-orange-300"
+                          : isSelected
+                            ? "border-cyan-400/25 bg-cyan-400/[0.12] text-cyan-300"
+                            : "border-white/10 bg-white/[0.03] text-slate-500",
+                    )}
+                  >
+                    {LABELS[index]}
+                  </span>
+                  <span className="flex-1 pt-1 text-sm leading-7">{option}</span>
+                  {answered ? (
+                    <span className="mt-1 shrink-0">
+                      <AppIcon
+                        name={isCorrect ? "check" : isSelected ? "target" : "spark"}
+                        className={cn(
+                          "h-4 w-4",
+                          isCorrect
+                            ? "text-emerald-300"
+                            : isSelected
+                              ? "text-orange-300"
+                              : "text-slate-600",
+                        )}
+                      />
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-          return (
-            <button
-              key={idx}
-              onClick={() => handleSelect(idx)}
-              disabled={answered}
-              className="w-full text-left flex items-start gap-3 p-3.5 rounded-lg border transition-all"
-              style={{
-                borderColor,
-                backgroundColor: bgColor,
-                cursor: answered ? "default" : "pointer",
-              }}
-            >
-              <span
-                className="shrink-0 w-7 h-7 rounded-md flex items-center justify-center font-mono text-xs font-bold transition-colors"
-                style={{ backgroundColor: labelBg, color: labelText }}
-              >
-                {LABELS[idx]}
-              </span>
-              <span
-                className="font-sans text-sm leading-relaxed pt-0.5 transition-colors"
-                style={{ color: textColor }}
-              >
-                {option}
-              </span>
-              {answered && isCorrect && (
-                <span className="ml-auto shrink-0 text-[#4FC3F7] text-xs font-mono pt-1">
-                  ✓
-                </span>
-              )}
-              {answered && isSelected && !isCorrect && (
-                <span className="ml-auto shrink-0 text-[#FF6B5B] text-xs font-mono pt-1">
-                  ✗
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Explanation + Next */}
-      {answered && (
         <div className="space-y-4">
-          <div className="rounded-lg bg-[#080C12] border border-[#1C2A3E] p-4">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#536B84] mb-1">
-              Explanation
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+              Score so far
             </p>
-            <p className="font-sans text-sm text-[#8FA3BC] leading-relaxed">
-              {q.explanation}
+            <p className="mt-3 font-display text-4xl font-semibold tracking-[-0.05em] text-slate-50">
+              {score}
+              <span className="text-lg text-slate-500">/{questions.length}</span>
+            </p>
+            <p className="mt-2 text-sm text-slate-400">
+              Answer once, then read the explanation before moving on.
             </p>
           </div>
-          <div className="flex justify-end">
-            <button
-              onClick={handleNext}
-              className="px-5 py-2.5 rounded-md bg-[#4FC3F7]/10 border border-[#4FC3F7]/30 text-[#4FC3F7] font-mono text-sm hover:bg-[#4FC3F7]/20 transition-colors flex items-center gap-2"
-            >
-              {current + 1 >= questions.length ? "See Results" : "Next Question"}
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
+
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+              Status
+            </p>
+            <p className="mt-3 text-sm leading-7 text-slate-300">
+              {answered
+                ? selected === question.answerIndex
+                  ? "Correct. Use the explanation to connect the answer back to the engineering principle."
+                  : "Not quite. Read the explanation, then continue to the next checkpoint."
+                : "Select the best answer. Your result will update instantly."}
+            </p>
           </div>
+
+          {answered ? (
+            <div className="rounded-[24px] border border-cyan-400/14 bg-cyan-400/[0.06] p-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-300">
+                Explanation
+              </p>
+              <p className="mt-3 text-sm leading-7 text-slate-200">
+                {question.explanation}
+              </p>
+            </div>
+          ) : null}
         </div>
-      )}
+      </div>
+
+      {answered ? (
+        <div className="mt-8 flex justify-end border-t border-white/10 pt-6">
+          <button
+            type="button"
+            onClick={handleNext}
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-950 shadow-[0_14px_32px_rgba(37,99,235,0.24)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
+          >
+            {current === questions.length - 1 ? "See results" : "Next question"}
+            <AppIcon name="spark" className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

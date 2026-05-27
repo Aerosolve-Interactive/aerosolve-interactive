@@ -3,11 +3,16 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LessonCard from "@/components/LessonCard";
+import Badge from "@/components/ui/Badge";
+import IconBadge from "@/components/ui/IconBadge";
+import ProgressBar from "@/components/ui/ProgressBar";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { units, getUnitBySlug } from "@/data/units";
 import { getLessonsByUnit } from "@/data/lessons";
+import { getDifficultyTone, getUnitIcon } from "@/lib/visuals";
 
 export function generateStaticParams() {
-  return units.map((u) => ({ unitSlug: u.slug }));
+  return units.map((unit) => ({ unitSlug: unit.slug }));
 }
 
 export async function generateMetadata({
@@ -18,6 +23,7 @@ export async function generateMetadata({
   const { unitSlug } = await params;
   const unit = getUnitBySlug(unitSlug);
   if (!unit) return {};
+
   return {
     title: `${unit.title} — AeroSolve Interactive`,
     description: unit.description,
@@ -34,100 +40,121 @@ export default async function UnitPage({
   if (!unit) notFound();
 
   const unitLessons = getLessonsByUnit(unitSlug);
-  const publishedCount = unitLessons.filter((l) => l.status === "published").length;
-
-  const difficultyColors: Record<string, string> = {
-    Beginner: "#4FC3F7",
-    Intermediate: "#F4C842",
-    Advanced: "#FF6B5B",
-  };
-  const diffColor = difficultyColors[unit.difficulty] ?? "#4FC3F7";
+  const publishedCount = unitLessons.filter((lesson) => lesson.status === "published").length;
+  const difficultyTone = getDifficultyTone(unit.difficulty);
 
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-16 grid-texture">
-        {/* Breadcrumb */}
-        <div className="border-b border-[#1C2A3E]">
-          <div className="max-w-7xl mx-auto px-6 py-3">
-            <div className="flex items-center gap-2 font-mono text-[11px] text-[#536B84]">
-              <Link href="/learn" className="hover:text-[#8FA3BC] transition-colors">
-                Learn
-              </Link>
-              <span>/</span>
-              <span className="text-[#8FA3BC]">{unit.title}</span>
-            </div>
+      <main className="grid-texture flex-1 pt-[72px]">
+        <div className="border-b border-white/10">
+          <div className="mx-auto flex max-w-7xl items-center gap-2 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+            <Link href="/learn" className="transition-colors hover:text-slate-200">
+              Learn
+            </Link>
+            <span>/</span>
+            <span className="text-slate-300">{unit.title}</span>
           </div>
         </div>
 
-        {/* Unit header */}
-        <section className="max-w-7xl mx-auto px-6 pt-12 pb-10">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="w-12 h-12 rounded-xl bg-[#0E1520] border border-[#1C2A3E] flex items-center justify-center text-2xl">
-                  {unit.icon}
-                </span>
-                <span
-                  className="font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded-md"
-                  style={{ color: diffColor, backgroundColor: `${diffColor}15` }}
-                >
-                  {unit.difficulty}
-                </span>
+        <section className="section-shell border-b border-white/10">
+          <div className="mx-auto grid max-w-7xl gap-10 px-6 pb-14 pt-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div>
+              <Badge tone={difficultyTone}>Unit module</Badge>
+              <div className="mt-6 flex items-center gap-4">
+                <IconBadge tone="cyan" className="h-14 w-14">
+                  <AppIcon name={getUnitIcon(unit.slug)} className="h-5 w-5" />
+                </IconBadge>
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                    {unit.tagline}
+                  </p>
+                  <h1 className="mt-2 font-display text-4xl font-semibold leading-tight tracking-[-0.06em] text-slate-50 md:text-5xl">
+                    {unit.title}
+                  </h1>
+                </div>
               </div>
-              <h1 className="font-display font-extrabold text-white text-3xl md:text-4xl tracking-[-0.04em] leading-tight mb-2">
-                {unit.title}
-              </h1>
-              <p className="font-sans text-sm text-[#4FC3F7] mb-4 font-medium">
-                {unit.tagline}
-              </p>
-              <p className="font-sans text-[#8FA3BC] leading-relaxed">
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
                 {unit.description}
               </p>
-            </div>
 
-            {/* Unit meta */}
-            <div className="shrink-0 rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-5 min-w-[200px]">
-              <div className="space-y-4">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[#536B84] mb-1">
-                    Progress
-                  </p>
-                  <p className="font-mono text-xl text-white">
-                    {publishedCount}
-                    <span className="text-[#536B84] text-sm">/{unit.lessonCount} lessons</span>
-                  </p>
-                </div>
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[#536B84] mb-1">
-                    Est. Time
-                  </p>
-                  <p className="font-mono text-sm text-white">{unit.estimatedHours} hours</p>
-                </div>
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[#536B84] mb-2">
-                    Topics
-                  </p>
-                  <ul className="space-y-1">
-                    {unit.topics.map((topic) => (
-                      <li key={topic} className="flex items-center gap-2">
-                        <span className="w-1 h-1 rounded-full bg-[#1C2A3E] inline-block" />
-                        <span className="font-sans text-xs text-[#536B84]">{topic}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              <div className="mt-8 flex flex-wrap gap-2">
+                {unit.topics.map((topic) => (
+                  <span
+                    key={topic}
+                    className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400"
+                  >
+                    {topic}
+                  </span>
+                ))}
               </div>
             </div>
+
+            <aside className="premium-panel rounded-[28px] p-6 lg:sticky lg:top-28">
+              <p className="eyebrow">Unit summary</p>
+              <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                    Lessons
+                  </p>
+                  <p className="mt-2 font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50">
+                    {publishedCount}/{unit.lessonCount}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                    Difficulty
+                  </p>
+                  <div className="mt-2">
+                    <Badge tone={difficultyTone}>{unit.difficulty}</Badge>
+                  </div>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                    Estimated time
+                  </p>
+                  <p className="mt-2 font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50">
+                    {unit.estimatedHours}h
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 border-t border-white/10 pt-5">
+                <ProgressBar value={publishedCount} max={unit.lessonCount} label="Published path" />
+              </div>
+
+              <div className="mt-6 rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                  Skills learned
+                </p>
+                <ul className="mt-4 space-y-3">
+                  {unit.topics.slice(0, 4).map((topic) => (
+                    <li key={topic} className="flex items-start gap-3 text-sm leading-7 text-slate-300">
+                      <AppIcon name="check" className="mt-1 h-4 w-4 shrink-0 text-cyan-300" />
+                      {topic}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </aside>
           </div>
         </section>
 
-        {/* Lessons list */}
-        <section className="max-w-7xl mx-auto px-6 pb-24">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-6">
-            Lessons
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <section className="mx-auto max-w-7xl px-6 py-16">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow mb-3">Learning Path</p>
+              <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+                Five guided modules in sequence.
+              </h2>
+            </div>
+            <p className="max-w-lg text-sm leading-7 text-slate-400">
+              Published modules are fully accessible today. Future lessons, if any,
+              remain visible with a clean in-production state rather than broken links.
+            </p>
+          </div>
+
+          <div className="grid gap-4 xl:grid-cols-2">
             {unitLessons.map((lesson) => (
               <LessonCard key={lesson.slug} lesson={lesson} unitSlug={unitSlug} />
             ))}

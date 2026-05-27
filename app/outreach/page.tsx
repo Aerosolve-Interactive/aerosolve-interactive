@@ -1,365 +1,476 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Badge from "@/components/ui/Badge";
+import IconBadge from "@/components/ui/IconBadge";
+import { AppIcon, type IconName } from "@/components/ui/AppIcon";
 
 export const metadata = {
   title: "Outreach — AeroSolve Interactive",
   description:
-    "AeroSolve builds and donates free aerospace STEM kits to underserved schools and after-school programs.",
+    "AeroSolve Interactive Outreach is a volunteer-based aerospace toy and model building program focused on community impact, STEM inspiration, and meaningful service.",
 };
 
-const KIT_TYPES = [
+const MISSION_CARDS: Array<{
+  title: string;
+  description: string;
+  icon: IconName;
+  tone: "cyan" | "gold" | "blue";
+}> = [
   {
-    icon: "✈",
-    title: "Paper Glider Kits",
+    title: "Build",
     description:
-      "Pre-cut cardstock gliders with experiment guide cards. Students test three designs, collect flight distance data, and connect results to lift and drag. Everything needed for a 45-minute class session for up to 30 students.",
-    includes: ["Pre-scored cardstock sheets", "Experiment guide cards", "Data recording sheets", "Teacher instruction guide"],
-    color: "#4FC3F7",
+      "Volunteers help create aerospace-themed toys, models, and simple hands-on learning objects.",
+    icon: "wrench",
+    tone: "cyan",
   },
   {
-    icon: "🚀",
-    title: "Straw Rocket Kits",
+    title: "Donate",
     description:
-      "Complete straw rocket building and launch materials. Students design rockets, add fins and nose cones, and run launch-angle optimization experiments — all in a standard class period.",
-    includes: ["Plastic drinking straws", "Cardstock for fins and nose cones", "Launch tube apparatus", "Angle measurement guide"],
-    color: "#FF6B5B",
+      "Completed projects can be donated to children, schools, nonprofits, libraries, hospitals, shelters, or other community partners.",
+    icon: "boxes",
+    tone: "gold",
   },
   {
-    icon: "🌀",
-    title: "Paper Helicopter Kits",
+    title: "Inspire",
     description:
-      "Classic autorotating helicopter builds that demonstrate drag, autorotation, and terminal velocity. Students vary blade width and length, measure drop times, and graph their results.",
-    includes: ["Template cards for 4 helicopter designs", "Drop-timing protocol guide", "Graph paper recording sheets", "Extension challenge card"],
-    color: "#F4C842",
+      "Each build is meant to introduce younger kids to aerospace, engineering, flight, and space in a fun and approachable way.",
+    icon: "spark",
+    tone: "blue",
+  },
+];
+
+const BUILD_EXAMPLES: Array<{
+  title: string;
+  description: string;
+  icon: IconName;
+}> = [
+  {
+    title: "Gliders & Flyers",
+    description:
+      "Simple aircraft-themed builds that make lift, balance, and control surfaces feel tangible.",
+    icon: "plane",
   },
   {
-    icon: "🏗",
-    title: "Engineering Challenge Kits",
+    title: "Rocket Models",
     description:
-      "Open-ended structural engineering challenges using cardboard, tape, and limited materials. Teams compete on bridge efficiency scores — maximum load divided by bridge mass. Teaches iteration, tradeoffs, and failure analysis.",
-    includes: ["Pre-cut cardboard sheets (per team)", "Tape allocations", "Loading weights and instructions", "Engineering design worksheet"],
-    color: "#4FC3F7",
+      "Small rocket-themed creations that can introduce thrust, staging, and space exploration in an approachable way.",
+    icon: "rocket",
+  },
+  {
+    title: "Space & Flight Toys",
+    description:
+      "Friendly aerospace-themed objects designed to spark imagination and curiosity in younger students.",
+    icon: "orbit",
   },
 ];
 
 const PROCESS_STEPS = [
   {
-    num: "01",
-    title: "Kit Design",
+    title: "Choose a Build",
     description:
-      "Our team develops and tests each kit design through multiple rounds of classroom testing to ensure the activities work reliably with everyday materials and minimal teacher preparation.",
+      "We select a simple aerospace-themed toy or educational model that can be made safely and affordably.",
   },
   {
-    num: "02",
-    title: "Materials Procurement",
+    title: "Recruit Volunteers",
     description:
-      "We source bulk materials at low cost. Donations fund material purchases directly — every dollar goes toward cardstock, straws, tape, and experiment guides, not overhead.",
+      "Students and community volunteers sign up to help with building, organizing materials, packaging, and outreach.",
   },
   {
-    num: "03",
-    title: "Kit Assembly",
+    title: "Build Together",
     description:
-      "Volunteer build teams assemble kits during scheduled build events. Each kit is checked, bagged, and labeled with grade-level instructions and curriculum alignment notes.",
+      "Volunteers meet during organized build sessions to assemble the toys or models.",
   },
   {
-    num: "04",
-    title: "Partner Identification",
+    title: "Donate the Projects",
     description:
-      "We partner with Title I schools, after-school programs, public libraries, and community centers — prioritizing students who lack access to extracurricular engineering education.",
+      "Finished builds are donated to community partners so they can reach children who may benefit from hands-on STEM inspiration.",
   },
   {
-    num: "05",
-    title: "Kit Delivery & Facilitation",
+    title: "Grow the Impact",
     description:
-      "Kits are delivered with optional facilitation support. Our volunteers can lead sessions or provide detailed teacher guides so educators can run activities independently.",
+      "As the program expands, AeroSolve Interactive can track builds, partners, volunteers, and outreach events.",
   },
 ];
 
-const VOLUNTEER_ROLES = [
+const VOLUNTEER_ROLES: Array<{
+  title: string;
+  description: string;
+  icon: IconName;
+  tone: "cyan" | "gold" | "blue" | "indigo";
+}> = [
   {
-    title: "Design",
+    title: "Builders",
     description:
-      "Develop and iterate on kit activities. Background in STEM education, curriculum design, or engineering helpful but not required. Mostly remote work.",
-    commitment: "2–4 hrs/week",
-    color: "#4FC3F7",
+      "Assemble aerospace-themed toys and models during volunteer build sessions.",
+    icon: "wrench",
+    tone: "cyan",
   },
   {
-    title: "Build",
+    title: "Project Leads",
     description:
-      "Assemble kits at our build events. Show up, follow along, help pack bags. No experience required — just willingness to help.",
-    commitment: "Build events: ~3 hrs each",
-    color: "#F4C842",
+      "Help plan build events, guide volunteers, and keep projects organized from start to finish.",
+    icon: "target",
+    tone: "gold",
   },
   {
-    title: "Outreach",
+    title: "Materials Team",
     description:
-      "Identify partner schools and organizations, manage relationships, and help coordinate deliveries. Good for people with a community or education network.",
-    commitment: "2–3 hrs/week",
-    color: "#FF6B5B",
+      "Organize supplies, prep build instructions, and keep each event ready to run smoothly.",
+    icon: "clipboard",
+    tone: "blue",
   },
   {
-    title: "Media",
+    title: "Partner Outreach Team",
     description:
-      "Document build events, create social media content, photograph kit deliveries, and help share the program's impact with potential donors and partners.",
-    commitment: "Flexible",
-    color: "#4FC3F7",
+      "Connect with schools, nonprofits, and community groups that may want to receive donated builds.",
+    icon: "users",
+    tone: "indigo",
   },
   {
-    title: "Logistics",
+    title: "Media Team",
     description:
-      "Coordinate materials procurement, kit inventory, event scheduling, and delivery logistics. Detail-oriented people who love spreadsheets are strongly encouraged.",
-    commitment: "2–4 hrs/week",
-    color: "#F4C842",
+      "Document events, capture photos, and help tell the story of the program’s impact.",
+    icon: "satellite",
+    tone: "cyan",
   },
 ];
+
+const IMPACT_STATS = [
+  ["Coming Soon", "Toys Built"],
+  ["Coming Soon", "Volunteer Hours"],
+  ["Coming Soon", "Outreach Events"],
+  ["Coming Soon", "Community Partners"],
+] as const;
+
+const FUTURE_VISION = [
+  "Larger aerospace toy-building drives led by students and volunteers.",
+  "Student-led STEM workshops connected to local service events.",
+  "School and nonprofit partnerships that align online learning with real community impact.",
+  "Donation events focused on aerospace craft days for younger students.",
+  "Volunteer leadership roles that let older students organize and mentor others.",
+  "A stronger connection between AeroSolve Interactive’s online lessons and physical outreach projects.",
+] as const;
 
 export default function OutreachPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-16 grid-texture">
-        {/* Hero */}
-        <section className="max-w-7xl mx-auto px-6 pt-16 pb-16 border-b border-[#1C2A3E]">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-4">
-            Community Program
-          </p>
-          <h1 className="font-display font-extrabold text-white text-4xl md:text-6xl tracking-[-0.04em] leading-tight mb-6 max-w-3xl">
-            Engineering education
-            <br />
-            should be free.
-          </h1>
-          <p className="font-sans text-[#8FA3BC] text-lg leading-relaxed max-w-2xl mb-8">
-            AeroSolve Outreach builds and donates aerospace STEM kits to
-            underserved schools, after-school programs, and community
-            organizations — at no cost to the students or teachers who receive
-            them. Every kit is designed to make real engineering accessible
-            with materials found in any classroom.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <a
-              href="#volunteer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#4FC3F7] text-[#080C12] font-mono font-bold text-sm hover:bg-[#7dd9ff] transition-colors"
-            >
-              Volunteer With Us
-              <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
-                <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
-            <a
-              href="#partner"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-[#1C2A3E] text-[#8FA3BC] font-mono text-sm hover:border-[#4FC3F7]/40 hover:text-[#e2ecf4] transition-colors"
-            >
-              Request Kits for Your School
-            </a>
-          </div>
-        </section>
+      <main className="grid-texture flex-1 pt-[72px]">
+        <section className="section-shell border-b border-white/10 bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.18),transparent_28%),radial-gradient(circle_at_82%_22%,rgba(99,102,241,0.18),transparent_24%),linear-gradient(180deg,rgba(7,17,31,0.92),rgba(3,7,18,0.88))]">
+          <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-18 md:pb-24 md:pt-24 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
+            <div>
+              <Badge tone="cyan" className="mb-6">
+                Volunteer-based aerospace outreach
+              </Badge>
+              <h1 className="max-w-4xl font-display text-[clamp(2.9rem,6vw,5.1rem)] font-semibold leading-[1.02] tracking-[-0.06em] text-slate-50">
+                Building Aerospace Toys.
+                <span className="block bg-gradient-to-r from-cyan-300 via-sky-300 to-indigo-300 bg-clip-text text-transparent">
+                  Inspiring Future Engineers.
+                </span>
+              </h1>
+              <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl">
+                AeroSolve Interactive Outreach brings students and volunteers together
+                to create aerospace-themed toys and educational models that can be
+                donated to children and community organizations.
+              </p>
 
-        {/* Impact stats */}
-        <section className="border-b border-[#1C2A3E]">
-          <div className="max-w-7xl mx-auto px-6 py-12">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-6">
-              Program Impact
-            </p>
-            {/* UPDATE THESE NUMBERS after each build event */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { value: "0", label: "Kits Built", sub: "Across all events" },
-                { value: "0", label: "Students Reached", sub: "Direct program beneficiaries" },
-                { value: "0", label: "Partner Schools", sub: "Active partnerships" },
-                { value: "0", label: "Volunteers", sub: "Total contributors" },
-              ].map(({ value, label, sub }) => (
-                <div key={label} className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-6">
-                  <p className="font-display font-extrabold text-4xl text-white tracking-[-0.04em] leading-none mb-1">
-                    {value}
-                  </p>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[#4FC3F7] mb-1">
-                    {label}
-                  </p>
-                  <p className="font-sans text-xs text-[#536B84]">{sub}</p>
+              <div className="mt-9 flex flex-wrap gap-4">
+                <a
+                  href="#volunteer"
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-6 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-950 shadow-[0_18px_46px_rgba(37,99,235,0.26)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
+                >
+                  Volunteer With Us
+                  <AppIcon name="users" className="h-3.5 w-3.5" />
+                </a>
+                <a
+                  href="#partner"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-6 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-400/25"
+                >
+                  Partner With Us
+                </a>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-x-6 top-6 h-64 rounded-full bg-cyan-400/20 blur-[120px]" />
+              <div className="premium-panel-strong relative rounded-[32px] p-6 md:p-7">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="eyebrow">Outreach Flight Deck</p>
+                    <h2 className="mt-4 font-display text-2xl font-semibold tracking-[-0.04em] text-slate-50">
+                      Student-Led Build Sessions
+                    </h2>
+                  </div>
+                  <IconBadge tone="cyan" className="h-12 w-12">
+                    <AppIcon name="rocket" />
+                  </IconBadge>
                 </div>
-              ))}
+
+                <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                  {[
+                    ["Build", "Toys & models"],
+                    ["Serve", "Community impact"],
+                    ["Inspire", "Future engineers"],
+                  ].map(([label, value], index) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+                    >
+                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                        {label}
+                      </p>
+                      <p className="mt-3 font-display text-xl font-semibold tracking-[-0.04em] text-slate-50">
+                        {value}
+                      </p>
+                      <div className="mt-3 h-1.5 rounded-full bg-white/[0.06]">
+                        <div
+                          className="h-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
+                          style={{ width: `${[76, 68, 84][index]}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 rounded-[24px] border border-white/10 bg-[#081120] p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                      Volunteer mission flow
+                    </p>
+                    <AppIcon name="orbit" className="h-4 w-4 text-cyan-300" />
+                  </div>
+                  <svg viewBox="0 0 260 150" className="mt-4 h-40 w-full">
+                    <defs>
+                      <linearGradient id="outreach-arc" x1="0%" x2="100%" y1="0%" y2="0%">
+                        <stop offset="0%" stopColor="#67E8F9" />
+                        <stop offset="55%" stopColor="#38BDF8" />
+                        <stop offset="100%" stopColor="#6366F1" />
+                      </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="260" height="150" rx="18" fill="rgba(255,255,255,0.02)" />
+                    <path
+                      d="M22 112c18-12 38-30 62-42 33-16 71-20 154-18"
+                      stroke="url(#outreach-arc)"
+                      strokeWidth="2.4"
+                      fill="none"
+                      className="hero-orbit"
+                    />
+                    <circle cx="22" cy="112" r="4" fill="#67E8F9" />
+                    <circle cx="111" cy="63" r="5" fill="#38BDF8" />
+                    <circle cx="236" cy="52" r="4" fill="#6366F1" />
+                    <text x="18" y="132" fill="#94A3B8" fontSize="9" fontFamily="monospace">Build</text>
+                    <text x="96" y="46" fill="#94A3B8" fontSize="9" fontFamily="monospace">Donate</text>
+                    <text x="214" y="36" fill="#94A3B8" fontSize="9" fontFamily="monospace">Inspire</text>
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Kit types */}
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-2">
-            What We Build
-          </p>
-          <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] mb-10">
-            Four kit types, one mission.
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {KIT_TYPES.map((kit) => (
-              <div
-                key={kit.title}
-                className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-6 card-hover"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="w-10 h-10 rounded-lg bg-[#080C12] border border-[#1C2A3E] flex items-center justify-center text-xl">
-                    {kit.icon}
-                  </span>
-                  <h3 className="font-display font-bold text-white text-lg tracking-[-0.02em]">
-                    {kit.title}
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow mb-3">Our Outreach Mission</p>
+              <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+                Hands-on aerospace learning with real community purpose.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-base leading-8 text-slate-300">
+              At AeroSolve Interactive, we believe aerospace should feel exciting,
+              understandable, and accessible. Our outreach program is designed to
+              bring volunteers together to build simple aerospace-themed toys and
+              educational models that can spark curiosity in younger students and
+              children across the community.
+            </p>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-3">
+            {MISSION_CARDS.map((card) => (
+              <article key={card.title} className="premium-panel card-hover rounded-[28px] p-6">
+                <div className="flex items-center gap-4">
+                  <IconBadge tone={card.tone}>
+                    <AppIcon name={card.icon} />
+                  </IconBadge>
+                  <h3 className="font-display text-2xl font-semibold tracking-[-0.04em] text-slate-50">
+                    {card.title}
                   </h3>
                 </div>
-                <p className="font-sans text-sm text-[#8FA3BC] leading-relaxed mb-4">
-                  {kit.description}
-                </p>
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[#536B84] mb-2">
-                    Includes
+                <p className="mt-4 text-sm leading-7 text-slate-300">{card.description}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            {BUILD_EXAMPLES.map((item) => (
+              <article key={item.title} className="premium-panel rounded-[24px] p-5">
+                <div className="flex items-center gap-3">
+                  <IconBadge tone="blue" className="h-10 w-10 rounded-xl">
+                    <AppIcon name={item.icon} className="h-4 w-4" />
+                  </IconBadge>
+                  <p className="font-display text-xl font-semibold tracking-[-0.03em] text-slate-50">
+                    {item.title}
                   </p>
-                  <ul className="space-y-1">
-                    {kit.includes.map((item) => (
-                      <li key={item} className="flex items-center gap-2 font-sans text-xs text-[#536B84]">
-                        <span
-                          className="w-1 h-1 rounded-full inline-block shrink-0"
-                          style={{ backgroundColor: kit.color }}
-                        />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
                 </div>
-              </div>
+                <p className="mt-3 text-sm leading-7 text-slate-300">{item.description}</p>
+              </article>
             ))}
           </div>
         </section>
 
-        {/* Process */}
-        <section className="border-t border-[#1C2A3E]">
-          <div className="max-w-7xl mx-auto px-6 py-16">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-2">
-              How It Works
-            </p>
-            <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] mb-10">
-              From design to delivery.
+        <section className="border-y border-white/10 bg-[#07111f]/60">
+          <div className="mx-auto max-w-7xl px-6 py-20">
+            <p className="eyebrow mb-3">How It Works</p>
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+              A clear path from volunteering to impact.
             </h2>
-            <div className="space-y-3">
-              {PROCESS_STEPS.map((step, i) => (
-                <div
-                  key={step.num}
-                  className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-5 flex gap-5 items-start"
-                >
-                  <span className="shrink-0 font-mono text-2xl font-bold text-[#4FC3F7]/40 w-10">
-                    {step.num}
-                  </span>
-                  <div>
-                    <h3 className="font-display font-bold text-white text-base tracking-[-0.02em] mb-1">
-                      {step.title}
-                    </h3>
-                    <p className="font-sans text-sm text-[#536B84] leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Volunteer roles */}
-        <section id="volunteer" className="border-t border-[#1C2A3E]">
-          <div className="max-w-7xl mx-auto px-6 py-16">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-2">
-              Get Involved
-            </p>
-            <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] mb-3">
-              Five ways to contribute.
-            </h2>
-            <p className="font-sans text-[#8FA3BC] mb-10 max-w-xl">
-              No aerospace background required. We need organizers, builders,
-              communicators, and logistics people as much as we need engineers.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-              {VOLUNTEER_ROLES.map((role) => (
-                <div
-                  key={role.title}
-                  className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-5 card-hover"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-display font-bold text-white text-base tracking-[-0.02em]">
-                      {role.title}
-                    </h3>
-                    <span
-                      className="font-mono text-[10px] px-2 py-0.5 rounded"
-                      style={{ color: role.color, backgroundColor: `${role.color}15` }}
-                    >
-                      {role.commitment}
-                    </span>
-                  </div>
-                  <p className="font-sans text-sm text-[#536B84] leading-relaxed">
-                    {role.description}
+            <div className="mt-10 grid gap-4 lg:grid-cols-5">
+              {PROCESS_STEPS.map((step, index) => (
+                <article key={step.title} className="premium-panel rounded-[24px] p-5">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                    0{index + 1}
                   </p>
-                </div>
+                  <h3 className="mt-4 font-display text-xl font-semibold tracking-[-0.03em] text-slate-50">
+                    {step.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{step.description}</p>
+                </article>
               ))}
-            </div>
-
-            {/* Volunteer CTA */}
-            <div className="rounded-xl border border-[#4FC3F7]/20 bg-[#4FC3F7]/5 p-8 text-center">
-              <h3 className="font-display font-bold text-white text-xl tracking-[-0.03em] mb-3">
-                Ready to volunteer?
-              </h3>
-              <p className="font-sans text-[#8FA3BC] mb-6 max-w-md mx-auto text-sm">
-                Fill out our volunteer interest form and we'll reach out with upcoming build
-                events and openings that match your availability.
-              </p>
-              {/* PASTE YOUR GOOGLE FORM LINK HERE */}
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#4FC3F7] text-[#080C12] font-mono font-bold text-sm hover:bg-[#7dd9ff] transition-colors"
-              >
-                Volunteer Sign-Up Form
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
             </div>
           </div>
         </section>
 
-        {/* School partnership */}
-        <section id="partner" className="border-t border-[#1C2A3E]">
-          <div className="max-w-7xl mx-auto px-6 py-16">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+        <section id="volunteer" className="mx-auto max-w-7xl px-6 py-20">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow mb-3">Volunteer Through Aerospace Outreach</p>
+              <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+                Service, teamwork, leadership, and STEM.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-base leading-8 text-slate-300">
+              This program gives students a way to earn service hours, practice
+              teamwork, build leadership skills, and contribute to a real
+              community-focused aerospace project.
+            </p>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-3">
+            {VOLUNTEER_ROLES.map((role) => (
+              <article key={role.title} className="premium-panel card-hover rounded-[28px] p-6">
+                <div className="flex items-center gap-4">
+                  <IconBadge tone={role.tone}>
+                    <AppIcon name={role.icon} />
+                  </IconBadge>
+                  <h3 className="font-display text-2xl font-semibold tracking-[-0.04em] text-slate-50">
+                    {role.title}
+                  </h3>
+                </div>
+                <p className="mt-4 text-sm leading-7 text-slate-300">{role.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="border-y border-white/10 bg-[#07111f]/60">
+          <div className="mx-auto max-w-7xl px-6 py-20">
+            <p className="eyebrow mb-3">Impact Section</p>
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+              Transparent progress, no inflated claims.
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300">
+              We are not claiming outcomes that have not happened yet. These
+              placeholders leave room for the program to grow honestly.
+            </p>
+            <div className="mt-8 grid gap-4 md:grid-cols-4">
+              {IMPACT_STATS.map(([value, label]) => (
+                <article key={label} className="premium-panel rounded-[24px] p-5">
+                  <p className="font-display text-4xl font-semibold tracking-[-0.05em] text-slate-50 md:text-5xl">
+                    {value}
+                  </p>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                    {label}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="partner" className="mx-auto max-w-7xl px-6 py-20">
+          <div className="premium-panel-strong rounded-[32px] p-8 md:p-10">
+            <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
               <div>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-[#536B84] mb-4">
-                  For Educators
-                </p>
-                <h2 className="font-display font-bold text-white text-2xl md:text-3xl tracking-[-0.03em] leading-tight mb-4">
-                  Request kits for your school or program.
+                <p className="eyebrow mb-3">Partner With AeroSolve Interactive</p>
+                <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+                  A growing outreach initiative for schools and community organizations.
                 </h2>
-                <p className="font-sans text-[#8FA3BC] leading-relaxed mb-4">
-                  We prioritize Title I schools, under-resourced after-school programs,
-                  and public libraries. All kits are provided at no cost. We ask only
-                  that you share a brief impact report after running the activity.
+                <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300">
+                  We are looking to connect with schools, libraries, nonprofits,
+                  children&apos;s organizations, hospitals, shelters, and community
+                  groups interested in receiving aerospace-themed toy donations or
+                  supporting STEM outreach.
                 </p>
-                <p className="font-sans text-[#536B84] text-sm leading-relaxed">
-                  We&apos;re currently expanding our partner network. Early partners will
-                  receive facilitation support and priority kit allocation.
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">
+                  The goal is to build something organized, welcoming, and useful:
+                  a program that parents, educators, nonprofits, and sponsors can
+                  look at and recognize as thoughtful and credible.
                 </p>
               </div>
-              <div className="rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-8">
-                <h3 className="font-display font-bold text-white text-lg tracking-[-0.02em] mb-2">
-                  Get in touch
-                </h3>
-                <p className="font-sans text-[#536B84] text-sm mb-6">
-                  Use our contact form to request kits, ask about our program, or
-                  discuss a partnership for your organization.
-                </p>
-                {/* PASTE YOUR NONPROFIT CONTACT FORM LINK HERE */}
+              <div className="grid gap-4">
+                <div className="premium-panel rounded-[24px] p-5">
+                  <div className="flex items-center gap-3">
+                    <IconBadge tone="cyan" className="h-10 w-10 rounded-xl">
+                      <AppIcon name="users" className="h-4 w-4" />
+                    </IconBadge>
+                    <div>
+                      <p className="font-display text-xl font-semibold tracking-[-0.03em] text-slate-50">
+                        Community-ready partnerships
+                      </p>
+                      <p className="mt-2 text-sm leading-7 text-slate-300">
+                        Outreach partners can help connect donated builds to younger
+                        students and children who may benefit from accessible STEM inspiration.
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <a
                   href="#"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-[#F4C842]/30 text-[#F4C842] font-mono text-sm hover:bg-[#F4C842]/10 transition-colors w-full justify-center"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-6 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-950 shadow-[0_18px_46px_rgba(37,99,235,0.26)]"
                 >
-                  Contact Us
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                  Contact Us About a Partnership
+                  <AppIcon name="spark" className="h-3.5 w-3.5" />
                 </a>
+                <a
+                  href="#volunteer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-6 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-200"
+                >
+                  Volunteer With Us
+                </a>
+                <p className="text-xs leading-6 text-slate-500">
+                  {/* PASTE YOUR GOOGLE FORM LINK HERE */}
+                  {/* PASTE YOUR NONPROFIT CONTACT FORM LINK HERE */}
+                </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-6 pb-24">
+          <div className="premium-panel rounded-[32px] p-8 md:p-10">
+            <p className="eyebrow mb-3">Where Outreach Can Grow</p>
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.05em] text-slate-50 md:text-4xl">
+              A future built around service and aerospace curiosity.
+            </h2>
+            <div className="mt-8 grid gap-3 md:grid-cols-2">
+              {FUTURE_VISION.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-[20px] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-7 text-slate-300"
+                >
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
         </section>

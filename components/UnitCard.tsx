@@ -1,75 +1,87 @@
 import Link from "next/link";
 import type { Unit } from "@/data/units";
+import { AppIcon } from "@/components/ui/AppIcon";
+import Badge from "@/components/ui/Badge";
+import IconBadge from "@/components/ui/IconBadge";
+import ProgressBar from "@/components/ui/ProgressBar";
+import { getDifficultyTone, getUnitIcon } from "@/lib/visuals";
 
 interface UnitCardProps {
   unit: Unit;
   publishedCount: number;
 }
 
-const difficultyColors: Record<string, string> = {
-  Beginner: "#4FC3F7",
-  Intermediate: "#F4C842",
-  Advanced: "#FF6B5B",
-};
-
 export default function UnitCard({ unit, publishedCount }: UnitCardProps) {
-  const diffColor = difficultyColors[unit.difficulty] ?? "#4FC3F7";
+  const difficultyTone = getDifficultyTone(unit.difficulty);
+  const progressValue = publishedCount / unit.lessonCount;
 
   return (
-    <Link href={`/learn/${unit.slug}`} className="block group">
-      <div className="card-hover rounded-xl border border-[#1C2A3E] bg-[#0E1520] p-6 h-full flex flex-col">
-        {/* Icon + difficulty */}
-        <div className="flex items-center justify-between mb-5">
-          <span className="w-10 h-10 rounded-lg bg-[#080C12] border border-[#1C2A3E] flex items-center justify-center text-xl">
-            {unit.icon}
-          </span>
-          <span
-            className="font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded-md"
-            style={{
-              color: diffColor,
-              backgroundColor: `${diffColor}15`,
-            }}
-          >
-            {unit.difficulty}
+    <Link href={`/learn/${unit.slug}`} className="group block h-full">
+      <article className="premium-panel card-hover h-full rounded-[28px] p-6 md:p-7">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <IconBadge tone="cyan">
+              <AppIcon name={getUnitIcon(unit.slug)} />
+            </IconBadge>
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                Unit {String(unit.lessonCount).padStart(2, "0")}
+              </p>
+              <Badge tone={difficultyTone} className="mt-2">
+                {unit.difficulty}
+              </Badge>
+            </div>
+          </div>
+          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">
+            {unit.estimatedHours} hrs
           </span>
         </div>
 
-        {/* Title */}
-        <h3 className="font-display font-bold text-white text-lg tracking-[-0.03em] leading-tight mb-1 group-hover:text-[#e2ecf4] transition-colors">
-          {unit.title}
-        </h3>
-        <p className="font-sans text-[11px] text-[#536B84] mb-3">
-          {unit.tagline}
-        </p>
-        <p className="font-sans text-xs text-[#536B84] leading-relaxed flex-1">
-          {unit.description}
-        </p>
-
-        {/* Meta row */}
-        <div className="flex items-center gap-4 mt-5 pt-4 border-t border-[#1C2A3E]">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#536B84] mb-0.5">
-              Lessons
-            </p>
-            <p className="font-mono text-sm text-white">
-              {publishedCount}
-              <span className="text-[#536B84]">/{unit.lessonCount}</span>
-            </p>
-          </div>
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#536B84] mb-0.5">
-              Est. Time
-            </p>
-            <p className="font-mono text-sm text-white">{unit.estimatedHours}h</p>
-          </div>
-          <div className="ml-auto font-mono text-[11px] text-[#4FC3F7] flex items-center gap-1 group-hover:gap-2 transition-all">
-            Explore
-            <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-              <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
+        <div className="mt-8">
+          <h3 className="font-display text-2xl font-semibold leading-tight tracking-[-0.04em] text-slate-50 transition-colors group-hover:text-white">
+            {unit.title}
+          </h3>
+          <p className="mt-2 text-sm font-medium text-cyan-300/90">{unit.tagline}</p>
+          <p className="mt-4 text-sm leading-7 text-slate-300">{unit.description}</p>
         </div>
-      </div>
+
+        <div className="mt-6 flex flex-wrap gap-2">
+          {unit.topics.slice(0, 3).map((topic) => (
+            <span
+              key={topic}
+              className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400"
+            >
+              {topic}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-7 space-y-4 border-t border-white/10 pt-5">
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">Lessons</p>
+              <p className="mt-1 text-lg font-semibold tracking-[-0.03em] text-slate-50">
+                {publishedCount}/{unit.lessonCount}
+              </p>
+            </div>
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">Path</p>
+              <p className="mt-1 text-lg font-semibold tracking-[-0.03em] text-slate-50">
+                0%
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">CTA</p>
+              <p className="mt-1 inline-flex items-center gap-2 text-sm font-medium text-cyan-300 transition-transform group-hover:translate-x-1">
+                Explore unit
+                <AppIcon name="spark" className="h-3.5 w-3.5" />
+              </p>
+            </div>
+          </div>
+
+          <ProgressBar value={progressValue} max={1} label="Published" />
+        </div>
+      </article>
     </Link>
   );
 }
