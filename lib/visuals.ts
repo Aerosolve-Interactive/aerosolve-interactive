@@ -40,10 +40,18 @@ export function getKitIcon(slug: string): IconName {
       return "activity";
     case "straw-rocket-launcher-kit":
       return "rocket";
-    case "parachute-drop-challenge-kit":
+    case "parachute-payload-drop-kit":
       return "shield";
-    case "wing-shape-experiment-kit":
+    case "glider-launcher-stand":
+      return "target";
+    case "mini-wind-tunnel-flow-visualizer":
       return "wings";
+    case "arduino-shake-table-structural-test-rig":
+      return "activity";
+    case "adjustable-rocket-fin-test-fixture":
+      return "rocket";
+    case "payload-parachute-capsule-challenge":
+      return "boxes";
     case "rocket-fin-stability-kit":
       return "target";
     default:

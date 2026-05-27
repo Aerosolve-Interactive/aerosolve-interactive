@@ -1,27 +1,31 @@
 import Link from "next/link";
-import type { KitGuide } from "@/data/kits";
+import type { Kit } from "@/data/kits";
 import Badge from "@/components/ui/Badge";
 import IconBadge from "@/components/ui/IconBadge";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { getDifficultyTone, getKitIcon } from "@/lib/visuals";
 
 interface KitCardProps {
-  kit: KitGuide;
+  kit: Kit;
 }
 
 export default function KitCard({ kit }: KitCardProps) {
   const difficultyTone = getDifficultyTone(kit.difficulty);
+  const levelTone = kit.level === "Advanced" ? "indigo" : "cyan";
 
   return (
     <Link href={`/kits/${kit.slug}`} className="group block h-full">
       <article className="premium-panel card-hover h-full rounded-[28px] p-6 md:p-7">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-4">
-            <IconBadge tone={kit.difficulty === "Intermediate" ? "gold" : "cyan"}>
+            <IconBadge tone={kit.level === "Advanced" ? "gold" : "cyan"}>
               <AppIcon name={getKitIcon(kit.slug)} />
             </IconBadge>
             <div>
-              <Badge tone={difficultyTone}>{kit.difficulty}</Badge>
+              <div className="flex flex-wrap gap-2">
+                <Badge tone={levelTone}>{kit.level}</Badge>
+                <Badge tone={difficultyTone}>{kit.difficulty}</Badge>
+              </div>
               <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
                 Ages {kit.ageRange}
               </p>
@@ -42,20 +46,26 @@ export default function KitCard({ kit }: KitCardProps) {
         <div className="mt-6 grid gap-4 rounded-[24px] border border-white/10 bg-white/[0.025] p-4 sm:grid-cols-2">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              Materials estimate
+              Estimated material cost
             </p>
             <p className="mt-2 text-sm text-slate-200">{kit.estimatedMaterialCost}</p>
+            {kit.maxMaterialCost ? (
+              <p className="mt-1 text-xs text-slate-500">{kit.maxMaterialCost}</p>
+            ) : null}
           </div>
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
               Concepts taught
             </p>
-            <p className="mt-2 text-sm text-slate-200">{kit.concepts.slice(0, 2).join(" • ")}</p>
+            <p className="mt-2 text-sm text-slate-200">{kit.concepts.slice(0, 2).join(" | ")}</p>
           </div>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          {kit.concepts.map((concept) => (
+          {kit.level === "Advanced" ? <Badge tone="indigo">CAD support</Badge> : null}
+          {kit.level === "Advanced" ? <Badge tone="blue">3D-printable parts optional</Badge> : null}
+          {kit.level === "Advanced" && kit.maxMaterialCost ? <Badge tone="gold">{kit.maxMaterialCost}</Badge> : null}
+          {kit.concepts.slice(0, 3).map((concept) => (
             <span
               key={concept}
               className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400"
@@ -71,9 +81,12 @@ export default function KitCard({ kit }: KitCardProps) {
           </p>
           <ul className="mt-3 space-y-2">
             {kit.materials.slice(0, 3).map((material) => (
-              <li key={material} className="flex items-start gap-2 text-sm text-slate-300">
+              <li key={material.item} className="flex items-start gap-2 text-sm text-slate-300">
                 <span className="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-400/70" />
-                {material}
+                <span>
+                  {material.item}
+                  <span className="text-slate-500"> · {material.quantity}</span>
+                </span>
               </li>
             ))}
           </ul>
